@@ -17,16 +17,7 @@ Quick installation
 
 2. Add ``mmc`` application to ``INSTALLED_APPS`` in your settings file
 
-3. Inject management classes before apps will be loaded
-
-.. code-block:: python
-
-    from mmc.mixins import inject_management
-
-    inject_management()
-
-
-4. Sync database (``./manage.py syncdb``)
+3. Sync database (``./manage.py syncdb``)
 
 
 Screenshots
@@ -38,3 +29,8 @@ Compatibility:
 -------------
 * Python: 2.6, 2.7
 * Django: 1.3.x, 1.4.x, 1.5.x, 1.6.x
+
+
+Contributors:
+- `@LPgenerator <https://github.com/LPgenerator>`_
+- `@e0ne <https://github.com/e0ne>`_
