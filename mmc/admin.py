@@ -1,7 +1,7 @@
 __author__ = 'gotlium'
 
 from django.contrib import admin
-from models import MMCLog, MMCScript, MMCHost
+from models import MMCLog, MMCScript, MMCHost, MMCEmail
 
 
 class MMCLogAdmin(admin.ModelAdmin):
@@ -54,6 +54,17 @@ class MMCBaseAdmin(admin.ModelAdmin):
         return False
 
 
+class MMCEmailAdmin(admin.ModelAdmin):
+    list_display = ('email', 'is_active', 'created', 'id',)
+    list_filter = ('created', 'is_active',)
+    list_display_links = ('email',)
+
+    date_hierarchy = 'created'
+    ordering = ('-id',)
+    search_fields = ('email',)
+
+
 admin.site.register(MMCLog, MMCLogAdmin)
 admin.site.register(MMCHost, MMCBaseAdmin)
 admin.site.register(MMCScript, MMCBaseAdmin)
+admin.site.register(MMCEmail, MMCEmailAdmin)

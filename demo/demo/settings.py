@@ -8,6 +8,7 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DATABASES = {
     'default': {
@@ -120,6 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    # 'south',
     'mmc',
     'apps.test',
 )
