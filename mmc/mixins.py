@@ -61,7 +61,7 @@ class BaseCommandMixin(object):
                 self.__mmc_check_is_running()
                 self.__mmc_lock()
         except Exception, msg:
-            print '[MMC]', msg.__str__()
+            print '[MMC]', msg.__unicode__()
 
     def execute(self, *args, **options):
         self.__mmc_one_copy()
@@ -72,7 +72,7 @@ class BaseCommandMixin(object):
             self._no_monkey.execute(self, *args, **options)
         except Exception, ex:
             self._success = False
-            self._error_message = ex.__str__()
+            self._error_message = ex.__unicode__()
             self._traceback = traceback.format_exc()
 
     def __mmc_store_log(self):
@@ -90,7 +90,7 @@ class BaseCommandMixin(object):
                 sys_argv=' '.join(map(unicode, sys.argv))
             )
         except Exception, msg:
-            print '[MMC] Logging broken with message:', msg.__str__()
+            print '[MMC] Logging broken with message:', msg.__unicode__()
 
     def __mmc_send_mail(self):
         if not self._success:
