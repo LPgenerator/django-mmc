@@ -82,4 +82,4 @@ class MMCEmail(models.Model):
                 send_mail(
                     SUBJECT, message, settings.DEFAULT_FROM_EMAIL, emails)
         except Exception, msg:
-            print '[MMC]', msg.__str__()
+            print '[MMC]', msg.__unicode__()
