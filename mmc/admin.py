@@ -36,7 +36,7 @@ class MMCLogAdmin(admin.ModelAdmin):
         return False
 
 
-class MMCBaseAdmin(admin.ModelAdmin):
+class MMCHostAdmin(admin.ModelAdmin):
     list_display = ('name', 'ignore', 'created', 'id',)
     list_filter = ('created', 'ignore',)
     list_display_links = ('name',)
@@ -54,6 +54,10 @@ class MMCBaseAdmin(admin.ModelAdmin):
         return False
 
 
+class MMCScriptAdmin(MMCHostAdmin):
+    list_display = ('name', 'ignore', 'one_copy', 'created', 'id',)
+
+
 class MMCEmailAdmin(admin.ModelAdmin):
     list_display = ('email', 'is_active', 'created', 'id',)
     list_filter = ('created', 'is_active',)
@@ -65,6 +69,6 @@ class MMCEmailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(MMCLog, MMCLogAdmin)
-admin.site.register(MMCHost, MMCBaseAdmin)
-admin.site.register(MMCScript, MMCBaseAdmin)
+admin.site.register(MMCHost, MMCHostAdmin)
+admin.site.register(MMCScript, MMCScriptAdmin)
 admin.site.register(MMCEmail, MMCEmailAdmin)
