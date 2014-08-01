@@ -111,8 +111,8 @@ class BaseCommandMixin(object):
     def _mmc_atexit_callback(self, *args, **kwargs):
         self.__mmc_store_log()
         self.__mmc_send_mail()
-        self.__mmc_print_log()
         self.__mmc_unlock()
+        self.__mmc_print_log()
 
 
 def inject_management():
