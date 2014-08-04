@@ -1,12 +1,10 @@
 __author__ = 'gotlium'
 
 import traceback
-import tempfile
 import socket
 import atexit
 import time
 import sys
-import os
 
 from django.core.management.base import BaseCommand
 from django.utils.encoding import smart_str
@@ -18,6 +16,7 @@ except ImportError:
 
     now = datetime.now
 
+from lock import get_lock_instance
 from utils import monkey_mix
 
 
@@ -32,34 +31,19 @@ class BaseCommandMixin(object):
         self._error_message = None
         self._traceback = None
         self._show_traceback = False
-        self._tempdir = tempfile.gettempdir()
         self._script = sys.argv[1]
-
-    def __mmc_get_lock_file(self):
-        return os.path.join(self._tempdir, self._script + '.lock')
-
-    def __mmc_unlock(self):
-        if self.__mmc_is_run():
-            os.unlink(self.__mmc_get_lock_file())
-
-    def __mmc_lock(self):
-        open(self.__mmc_get_lock_file(), 'w').close()
-
-    def __mmc_is_run(self):
-        return os.path.exists(self.__mmc_get_lock_file())
-
-    def __mmc_check_is_running(self):
-        if self.__mmc_is_run():
-            sys.stdout.write('Already running\n')
-            sys.exit(-1)
+        self._lock = get_lock_instance()
 
     def __mmc_one_copy(self):
         try:
             from models import MMCScript
 
-            if MMCScript.get_one_copy(self._script):
-                self.__mmc_check_is_running()
-                self.__mmc_lock()
+            try:
+                if MMCScript.get_one_copy(self._script):
+                    self._lock.check_is_running()
+                    self._lock.lock()
+            except MMCScript.DoesNotExist:
+                pass
         except Exception, msg:
             print '[MMC]', msg.__unicode__()
 
@@ -111,7 +95,7 @@ class BaseCommandMixin(object):
     def _mmc_atexit_callback(self, *args, **kwargs):
         self.__mmc_store_log()
         self.__mmc_send_mail()
-        self.__mmc_unlock()
+        self._lock.unlock()
         self.__mmc_print_log()
 
 
