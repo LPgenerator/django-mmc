@@ -125,3 +125,26 @@ INSTALLED_APPS = (
     'mmc',
     'apps.test',
 )
+
+# If you have multiple cron instances, you can specify RedisLock or
+# MemcacheLock for run only one copy of management command.
+MMC_LOCK_TYPE = 'FileLock'
+
+# Settings for RedisLock
+# MMC_REDIS_CONFIG = {
+#     'host': 'localhost', 'port': 6379,
+#     'db': 0, 'password': None
+# }
+
+# Settings for MemcacheLock
+# MMC_MEMCACHED_CONFIG = {
+#     'servers': ['127.0.0.1:11211'], 'debug': 0
+# }
+
+# Mail subject, for send any errors on your script
+MMC_SUBJECT = '[MMC] Errors'
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
