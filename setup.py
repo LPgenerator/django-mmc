@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-mmc',
-    version="1.1.1",
+    version="1.2",
     description='Monitor management commands on Django',
     keywords="django management",
     long_description=open('README.rst').read(),
