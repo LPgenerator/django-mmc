@@ -75,8 +75,8 @@ class MemcacheLock(RedisLock):
         except ImportError:
             from pylibmc import Client
 
-        self._cli = Client(**defaults.MEMCACHED_CONFIG)
         super(MemcacheLock, self).__init__()
+        self._cli = Client(**defaults.MEMCACHED_CONFIG)
         self.random_wait()
 
 
