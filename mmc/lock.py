@@ -10,9 +10,9 @@ import defaults
 
 
 class AbstractLock(object):
-    def __init__(self):
+    def __init__(self, script):
+        self._script = script
         self._tempdir = tempfile.gettempdir()
-        self._script = sys.argv[1]
 
     def get_lock_file(self):
         return os.path.join(self._tempdir, self._script + '.lock')
@@ -50,11 +50,11 @@ class FileLock(AbstractLock):
 
 
 class RedisLock(AbstractLock):
-    def __init__(self):
+    def __init__(self, script):
         from redis import StrictRedis
 
         self._cli = StrictRedis(**defaults.REDIS_CONFIG)
-        super(RedisLock, self).__init__()
+        super(RedisLock, self).__init__(script)
         self.random_wait()
 
     def unlock(self):
@@ -69,16 +69,16 @@ class RedisLock(AbstractLock):
 
 
 class MemcacheLock(RedisLock):
-    def __init__(self):
+    def __init__(self, script):
         try:
             from memcache import Client
         except ImportError:
             from pylibmc import Client
 
-        super(MemcacheLock, self).__init__()
+        super(MemcacheLock, self).__init__(script)
         self._cli = Client(**defaults.MEMCACHED_CONFIG)
         self.random_wait()
 
 
-def get_lock_instance():
-    return globals().get(defaults.LOCK_TYPE)()
+def get_lock_instance(script):
+    return globals().get(defaults.LOCK_TYPE)(script)

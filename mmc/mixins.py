@@ -32,7 +32,7 @@ class BaseCommandMixin(object):
         self._traceback = None
         self._show_traceback = False
         self._script = self.__module__.split('.')[-1]
-        self._lock = get_lock_instance()
+        self._lock = get_lock_instance(self._script)
 
     def __mmc_one_copy(self):
         try:
