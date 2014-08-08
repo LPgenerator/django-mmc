@@ -54,10 +54,11 @@ class BaseCommandMixin(object):
 
         try:
             self._no_monkey.execute(self, *args, **options)
-        except Exception, ex:
+        except Exception as ex:
             self._success = False
             self._error_message = ex.__unicode__()
             self._traceback = traceback.format_exc()
+            raise
 
     def __mmc_store_log(self):
         try:
