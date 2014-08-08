@@ -31,8 +31,8 @@ class BaseCommandMixin(object):
         self._error_message = None
         self._traceback = None
         self._show_traceback = False
-        self._script = sys.argv[1]
-        self._lock = get_lock_instance()
+        self._script = self.__module__.split('.')[-1]
+        self._lock = get_lock_instance(self._script)
 
     def __mmc_one_copy(self):
         try:
@@ -54,10 +54,11 @@ class BaseCommandMixin(object):
 
         try:
             self._no_monkey.execute(self, *args, **options)
-        except Exception, ex:
+        except Exception as ex:
             self._success = False
             self._error_message = ex.__unicode__()
             self._traceback = traceback.format_exc()
+            raise
 
     def __mmc_store_log(self):
         try:
