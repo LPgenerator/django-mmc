@@ -69,6 +69,9 @@ class MMCEmail(models.Model):
     email = models.EmailField()
     is_active = models.BooleanField(default=True)
 
+    def __unicode__(self):
+        return self.email
+
     class Meta:
         verbose_name = 'Email'
         verbose_name_plural = 'Emails'
