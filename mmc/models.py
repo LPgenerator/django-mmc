@@ -50,6 +50,9 @@ class MMCLog(models.Model):
     traceback = models.TextField(blank=True, null=True)
     sys_argv = models.CharField(max_length=255, blank=True, null=True)
 
+    def __unicode__(self):
+        return self.script.name
+
     class Meta:
         verbose_name = 'Log'
         verbose_name_plural = 'Logs'
