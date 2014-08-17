@@ -1,11 +1,12 @@
 from setuptools import setup, find_packages
+from mmc import get_version
 
 
 setup(
     name='django-mmc',
-    version="1.2.2",
-    description='Monitor management commands on Django',
-    keywords="django management",
+    version=get_version(),
+    description='App for monitoring management commands on Django.',
+    keywords="django management commands",
     long_description=open('README.rst').read(),
     author="GoTLiuM InSPiRiT",
     author_email='gotlium@gmail.com',
