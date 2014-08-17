@@ -10,7 +10,9 @@ from mmc.defaults import SUBJECT
 class MMCHost(models.Model):
     created = models.DateField(auto_now=True)
     name = models.CharField(max_length=255, unique=True)
-    ignore = models.BooleanField(default=False)
+    ignore = models.BooleanField(
+        default=False,
+        help_text='All logs from all scripts on this host will be ignored.')
 
     class Meta:
         verbose_name = 'Host'
@@ -23,8 +25,10 @@ class MMCHost(models.Model):
 class MMCScript(models.Model):
     created = models.DateField(auto_now=True)
     name = models.CharField(max_length=255, unique=True)
-    ignore = models.BooleanField(default=False)
-    one_copy = models.BooleanField(default=False)
+    ignore = models.BooleanField(
+        default=False, help_text='All logs from this script will be ignored.')
+    one_copy = models.BooleanField(
+        default=False, help_text='Only one copy of this script will be run.')
     save_on_error = models.BooleanField(
         default=False, help_text='This flag used only for ignored commands.')
 
@@ -75,8 +79,11 @@ class MMCLog(models.Model):
 
 class MMCEmail(models.Model):
     created = models.DateField(auto_now=True, editable=False)
-    email = models.EmailField()
-    is_active = models.BooleanField(default=True)
+    email = models.EmailField(
+        help_text='Email will be used for send all exceptions from command.')
+    is_active = models.BooleanField(
+        default=True,
+        help_text='Email may be switched off for a little while.')
 
     def __unicode__(self):
         return self.email
