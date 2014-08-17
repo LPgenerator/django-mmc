@@ -1,12 +1,15 @@
 __author__ = 'gotlium'
 
+__all__ = ['BaseCommand', 'NoArgsCommand', 'inject_management']
+
 import traceback
 import socket
 import atexit
 import time
 import sys
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
+from django.core.management.base import BaseCommand as BaseCommandOrigin
 from django.utils.encoding import smart_str
 
 try:
@@ -16,13 +19,16 @@ except ImportError:
 
     now = datetime.now
 
-from lock import get_lock_instance
-from utils import monkey_mix
+from .lock import get_lock_instance
+from .utils import monkey_mix
 
 
 class BaseCommandMixin(object):
     def __init__(self):
-        self._no_monkey.__init__(self)
+        if hasattr(self, '_no_monkey'):
+            self._no_monkey.__init__(self)
+        else:
+            super(BaseCommandMixin, self).__init__()
 
         self._mmc_start_date = now()
         self._mmc_start_time = time.time()
@@ -53,7 +59,10 @@ class BaseCommandMixin(object):
         self._mmc_show_traceback = options.get('traceback', False)
 
         try:
-            self._no_monkey.execute(self, *args, **options)
+            if hasattr(self, '_no_monkey'):
+                self._no_monkey.execute(self, *args, **options)
+            else:
+                super(BaseCommandMixin, self).execute(*args, **options)
         except Exception as ex:
             self._mmc_success = False
             self._mmc_error_message = ex.__unicode__()
@@ -100,5 +109,13 @@ class BaseCommandMixin(object):
         self.__mmc_print_log()
 
 
+class BaseCommand(BaseCommandMixin, BaseCommandOrigin):
+    pass
+
+
+class NoArgsCommand(BaseCommandMixin, NoArgsCommandOrigin):
+    pass
+
+
 def inject_management():
-    monkey_mix(BaseCommand, BaseCommandMixin)
+    monkey_mix(BaseCommandOrigin, BaseCommandMixin)
