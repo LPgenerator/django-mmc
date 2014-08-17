@@ -1,4 +1,5 @@
 # Django settings for demo project.
+import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -13,11 +14,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'NAME': ':memory:' if 'test' in sys.argv else 'db.sqlite',
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
@@ -112,6 +115,11 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+from django import VERSION
+
+if VERSION[:2] < (1, 6):
+    TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
 INSTALLED_APPS = (
     'django.contrib.auth',

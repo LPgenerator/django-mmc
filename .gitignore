@@ -39,3 +39,4 @@ nosetests.xml
 docs/build
 db.sqlite
 *.sh
+TODO

@@ -26,3 +26,11 @@ run_server:
 
 run_shell:
 	cd demo && python manage.py shell_plus --print-sql
+
+test:
+	cd demo && ./manage.py test mmc
+
+coverage:
+	cd demo && \
+	coverage run --branch --source=mmc ./manage.py test mmc && \
+	coverage report --omit="*/mmc/test*,*/mmc/migrations/*,*/mmc/admin*"

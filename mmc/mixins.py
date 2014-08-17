@@ -24,6 +24,10 @@ from .lock import get_lock_instance
 from .utils import monkey_mix
 
 
+def mmc_is_test():
+    return sys.argv[1:3] == ['test', 'mmc']
+
+
 class BaseCommandMixin(object):
     def __init__(self):
         if hasattr(self, '_no_monkey'):
@@ -54,21 +58,36 @@ class BaseCommandMixin(object):
         except Exception, msg:
             print '[MMC]', msg.__unicode__()
 
-    def execute(self, *args, **options):
-        self.__mmc_one_copy()
-        atexit.register(self._mmc_atexit_callback)
-        self._mmc_show_traceback = options.get('traceback', False)
+    def __mmc_init(self, *args, **options):
+        if not mmc_is_test():
+            self.__mmc_one_copy()
+            atexit.register(self._mmc_at_exit_callback)
+            self._mmc_show_traceback = options.get('traceback', False)
 
+    def __mmc_run(self, *args, **options):
+        if hasattr(self, '_no_monkey'):
+            self._no_monkey.execute(self, *args, **options)
+        else:
+            super(BaseCommandMixin, self).execute(*args, **options)
+
+    def __mmc_execute(self, *args, **options):
         try:
-            if hasattr(self, '_no_monkey'):
-                self._no_monkey.execute(self, *args, **options)
-            else:
-                super(BaseCommandMixin, self).execute(*args, **options)
+            self.__mmc_run(*args, **options)
         except Exception as ex:
             self._mmc_success = False
             self._mmc_error_message = ex.__unicode__()
             self._mmc_traceback = traceback.format_exc()
-            raise
+            if not mmc_is_test():
+                raise
+
+    def __mmc_done(self):
+        if mmc_is_test():
+            self._mmc_at_exit_callback()
+
+    def execute(self, *args, **options):
+        self.__mmc_init(*args, **options)
+        self.__mmc_execute(*args, **options)
+        self.__mmc_done()
 
     def __mmc_store_log(self):
         try:
@@ -97,7 +116,7 @@ class BaseCommandMixin(object):
             MMCEmail.send(self._mmc_traceback)
 
     def __mmc_print_log(self):
-        if not self._mmc_success:
+        if not self._mmc_success and not mmc_is_test():
             if self._mmc_show_traceback:
                 print self._mmc_traceback
             else:
@@ -106,7 +125,7 @@ class BaseCommandMixin(object):
                 ))
             sys.exit(1)
 
-    def _mmc_atexit_callback(self, *args, **kwargs):
+    def _mmc_at_exit_callback(self, *args, **kwargs):
         self.__mmc_store_log()
         self.__mmc_send_mail()
         self._mmc_lock.unlock()
