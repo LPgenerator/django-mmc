@@ -20,6 +20,7 @@ except ImportError:
 
     now = datetime.now
 
+from .defaults import SENTRY_NOTIFICATION, EMAIL_NOTIFICATION
 from .lock import get_lock_instance
 from .utils import monkey_mix
 
@@ -44,6 +45,7 @@ class BaseCommandMixin(object):
         self._mmc_show_traceback = False
         self._mmc_script = self.__module__.split('.')[-1]
         self._mmc_lock = get_lock_instance(self._mmc_script)
+        self._mmc_exc_info = None
 
     def __mmc_one_copy(self):
         try:
@@ -77,6 +79,7 @@ class BaseCommandMixin(object):
             self._mmc_success = False
             self._mmc_error_message = ex.__unicode__()
             self._mmc_traceback = traceback.format_exc()
+            self._mmc_exc_info = sys.exc_info()
             if not mmc_is_test():
                 raise
 
@@ -110,10 +113,19 @@ class BaseCommandMixin(object):
             print '[MMC] Logging broken with message:', msg.__unicode__()
 
     def __mmc_send_mail(self):
-        if not self._mmc_success:
+        if not self._mmc_success and EMAIL_NOTIFICATION:
             from mmc.models import MMCEmail
 
             MMCEmail.send(self._mmc_traceback)
+
+    def __mmc_send2sentry(self):
+        if not self._mmc_success and SENTRY_NOTIFICATION:
+            try:
+                from raven.contrib.django.raven_compat.models import client
+
+                client.captureException(exc_info=self._mmc_exc_info)
+            except ImportError:
+                pass
 
     def __mmc_print_log(self):
         if not self._mmc_success and not mmc_is_test():
@@ -128,6 +140,7 @@ class BaseCommandMixin(object):
     def _mmc_at_exit_callback(self, *args, **kwargs):
         self.__mmc_store_log()
         self.__mmc_send_mail()
+        self.__mmc_send2sentry()
         self._mmc_lock.unlock()
         self.__mmc_print_log()
 
