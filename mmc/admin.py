@@ -5,13 +5,14 @@ from models import MMCLog, MMCScript, MMCHost, MMCEmail
 
 
 class MMCLogAdmin(admin.ModelAdmin):
-    list_display = ('script', 'hostname', 'success', 'elapsed', 'start', 'end')
+    list_display = (
+        'script', 'hostname', 'success', 'elapsed', 'memory', 'start', 'end')
     list_filter = ('success', 'hostname', 'script', 'created',)
     list_display_links = ('script',)
 
     readonly_fields = (
         'start', 'end', 'elapsed', 'hostname', 'script',
-        'sys_argv', 'success', 'error_message',)
+        'sys_argv', 'success', 'error_message', 'memory')
     fields = (
         'start', 'end', 'elapsed', 'hostname', 'script',
         'sys_argv', 'success', 'error_message', 'traceback',)

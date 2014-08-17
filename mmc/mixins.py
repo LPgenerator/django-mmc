@@ -3,6 +3,7 @@ __author__ = 'gotlium'
 __all__ = ['BaseCommand', 'NoArgsCommand', 'inject_management']
 
 import traceback
+import resource
 import socket
 import atexit
 import time
@@ -73,6 +74,8 @@ class BaseCommandMixin(object):
         try:
             from mmc.models import MMCLog
 
+            memory = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+
             MMCLog.logging(
                 start=self._mmc_start_date,
                 hostname=socket.gethostname(),
@@ -81,7 +84,8 @@ class BaseCommandMixin(object):
                 success=self._mmc_success,
                 error_message=self._mmc_error_message,
                 traceback=self._mmc_traceback,
-                sys_argv=' '.join(map(unicode, sys.argv))
+                sys_argv=' '.join(map(unicode, sys.argv)),
+                memory="%0.2f" % (memory / 1048576.0),
             )
         except Exception, msg:
             print '[MMC] Logging broken with message:', msg.__unicode__()
