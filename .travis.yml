@@ -4,7 +4,6 @@ python:
   - "2.7"
 before_install:
   - export PIP_USE_MIRRORS=true
-  - export DJANGO_SETTINGS_MODULE=demo.demo.settings
 install:
   - pip install -e .
   - pip install -r requirements/tests.txt Django==$DJANGO
