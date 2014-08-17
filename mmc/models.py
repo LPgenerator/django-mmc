@@ -25,6 +25,8 @@ class MMCScript(models.Model):
     name = models.CharField(max_length=255, unique=True)
     ignore = models.BooleanField(default=False)
     one_copy = models.BooleanField(default=False)
+    save_on_error = models.BooleanField(
+        default=False, help_text='This flag used only for ignored commands.')
 
     @classmethod
     def get_one_copy(cls, name):
@@ -63,7 +65,10 @@ class MMCLog(models.Model):
             name=kwargs['script'])[0]
         kwargs['hostname'] = MMCHost.objects.get_or_create(
             name=kwargs['hostname'])[0]
+
         if not kwargs['script'].ignore and not kwargs['hostname'].ignore:
+            cls.objects.create(**kwargs)
+        elif not kwargs['success'] and kwargs['script'].save_on_error:
             cls.objects.create(**kwargs)
 
 

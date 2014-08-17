@@ -55,7 +55,9 @@ class MMCHostAdmin(admin.ModelAdmin):
 
 
 class MMCScriptAdmin(MMCHostAdmin):
-    list_display = ('name', 'ignore', 'one_copy', 'created', 'id',)
+    list_display = (
+        'name', 'ignore', 'one_copy', 'save_on_error', 'created', 'id',)
+    list_filter = ('ignore', 'one_copy', 'save_on_error')
 
 
 class MMCEmailAdmin(admin.ModelAdmin):
