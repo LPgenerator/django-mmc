@@ -12,7 +12,16 @@ import defaults
 class AbstractLock(object):
     def __init__(self, script):
         self._script = script
+        self._lock_time = self.get_lock_time()
         self._tempdir = tempfile.gettempdir()
+
+    def get_lock_time(self):
+        try:
+            from mmc.models import MMCLog
+
+            return MMCLog.get_lock_time(self._script)
+        except:
+            return defaults.DEFAULT_LOCK_TIME
 
     def get_lock_file(self):
         return os.path.join(self._tempdir, self._script + '.lock')
@@ -62,7 +71,7 @@ class RedisLock(AbstractLock):
             self._cli.delete(self.get_lock_file())
 
     def lock(self):
-        return self._cli.set(self.get_lock_file(), '1')
+        return self._cli.set(self.get_lock_file(), '1', self._lock_time)
 
     def is_run(self):
         return self._cli.get(self.get_lock_file())

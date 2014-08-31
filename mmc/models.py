@@ -84,6 +84,12 @@ class MMCLog(models.Model):
         if not kwargs['success'] and kwargs['script'].save_on_error:
             return do_save()
 
+    @classmethod
+    def get_lock_time(cls, script_name):
+        return round(int(cls.objects.values_list(
+            'elapsed', flat=True
+        ).filter(script__name=script_name).order_by('-elapsed')[:1][0]) + 1)
+
 
 class MMCEmail(models.Model):
     created = models.DateField(auto_now=True, editable=False)

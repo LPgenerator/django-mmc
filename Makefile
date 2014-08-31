@@ -25,7 +25,7 @@ run_server:
 	cd demo && python manage.py runserver --traceback
 
 run_shell:
-	cd demo && python manage.py shell_plus --print-sql
+	cd demo && python manage.py shell
 
 test:
 	cd demo && ./manage.py test mmc
