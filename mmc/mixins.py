@@ -13,6 +13,7 @@ import os
 from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
 from django.utils.encoding import smart_str
+from django.db.utils import DatabaseError
 
 try:
     from django.utils.timezone import now
@@ -97,19 +98,22 @@ class BaseCommandMixin(object):
         self.__mmc_done()
 
     def __mmc_log_start(self):
-        from mmc.models import MMCLog
+        try:
+            from mmc.models import MMCLog
 
-        self._mmc_log_instance = MMCLog.logging(
-            start=self._mmc_start_date,
-            hostname=self._mmc_hostname,
-            script=self._mmc_script,
-            elapsed=0.00,
-            success=None,
-            error_message="",
-            traceback="",
-            sys_argv=' '.join(map(unicode, sys.argv)),
-            memory=0.00
-        )
+            self._mmc_log_instance = MMCLog.logging(
+                start=self._mmc_start_date,
+                hostname=self._mmc_hostname,
+                script=self._mmc_script,
+                elapsed=0.00,
+                success=None,
+                error_message="",
+                traceback="",
+                sys_argv=' '.join(map(unicode, sys.argv)),
+                memory=0.00
+            )
+        except DatabaseError:
+            pass
 
     def __mmc_store_log(self):
         try:
