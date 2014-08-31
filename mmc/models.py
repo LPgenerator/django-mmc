@@ -81,7 +81,7 @@ class MMCLog(models.Model):
         if not kwargs['script'].ignore and not kwargs['hostname'].ignore:
             return do_save()
 
-        if not kwargs['success'] and kwargs['script'].save_on_error:
+        if kwargs['success'] is False and kwargs['script'].save_on_error:
             return do_save()
 
     @classmethod

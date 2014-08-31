@@ -4,8 +4,6 @@ Django-mmc
 .. image:: https://api.travis-ci.org/LPgenerator/django-mmc.png?branch=master
     :alt: Build Status
     :target: https://travis-ci.org/LPgenerator/django-mmc
-.. image:: https://coveralls.io/repos/LPgenerator/django-mmc/badge.png?branch=master
-    :target: https://coveralls.io/r/LPgenerator/django-mmc?branch=master
 .. image:: https://pypip.in/v/django-mmc/badge.png
     :alt: Current version on PyPi
     :target: https://crate.io/packages/django-mmc/
@@ -60,6 +58,7 @@ Local demo installation
     $ python manage.py test_command >& /dev/null
     $ python manage.py test_command_noargs >& /dev/null
     $ python manage.py test_command_error >& /dev/null
+    $ python manage.py test_command_killed >& /dev/null
     $ python manage.py runserver >& /dev/null &
     $ xdg-open http://127.0.0.1:8000/admin/mmc/mmclog/
 
