@@ -56,6 +56,7 @@ class MMCLog(models.Model):
     traceback = models.TextField(blank=True, null=True)
     sys_argv = models.CharField(max_length=255, blank=True, null=True)
     memory = models.FloatField(default=0.00)
+    cpu_time = models.FloatField(default=0.00)
 
     def __unicode__(self):
         return self.script.name

@@ -50,6 +50,7 @@ class BaseCommandMixin(object):
         self._mmc_exc_info = None
         self._mmc_hostname = socket.gethostname()
         self._mmc_log_instance = None
+        self._mmc_resources = resource.getrusage(resource.RUSAGE_SELF)
 
     def __mmc_one_copy(self):
         try:
@@ -110,7 +111,8 @@ class BaseCommandMixin(object):
                 error_message="",
                 traceback="",
                 sys_argv=' '.join(map(unicode, sys.argv)),
-                memory=0.00
+                memory=0.00,
+                cpu_time=0.00
             )
         except DatabaseError:
             pass
@@ -120,6 +122,10 @@ class BaseCommandMixin(object):
             from mmc.models import MMCLog
 
             memory = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+            resources = resource.getrusage(resource.RUSAGE_SELF)
+
+            utime = resources.ru_utime - self._mmc_resources.ru_utime
+            stime = resources.ru_stime - self._mmc_resources.ru_stime
 
             MMCLog.logging(
                 instance=self._mmc_log_instance,
@@ -132,6 +138,7 @@ class BaseCommandMixin(object):
                 traceback=self._mmc_traceback,
                 sys_argv=' '.join(map(unicode, sys.argv)),
                 memory="%0.2f" % (memory / 1048576.0),
+                cpu_time="%0.2f" % (utime + stime),
             )
         except Exception, msg:
             print '[MMC] Logging broken with message:', msg.__unicode__()
