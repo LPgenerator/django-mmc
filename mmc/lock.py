@@ -1,6 +1,7 @@
 __author__ = 'gotlium'
 
 import tempfile
+import datetime
 import random
 import time
 import sys
@@ -54,7 +55,15 @@ class FileLock(AbstractLock):
     def lock(self):
         open(self.get_lock_file(), 'w').close()
 
+    def _cleanup_lock(self):
+        created = datetime.datetime.fromtimestamp(
+            os.path.getctime(self.get_lock_file()))
+        seconds = (datetime.datetime.now() - created).seconds
+        if seconds > self._lock_time:
+            os.unlink(self.get_lock_file())
+
     def is_run(self):
+        self._cleanup_lock()
         return os.path.exists(self.get_lock_file())
 
 
