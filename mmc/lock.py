@@ -56,11 +56,12 @@ class FileLock(AbstractLock):
         open(self.get_lock_file(), 'w').close()
 
     def _cleanup_lock(self):
-        created = datetime.datetime.fromtimestamp(
-            os.path.getctime(self.get_lock_file()))
-        seconds = (datetime.datetime.now() - created).seconds
-        if seconds > self._lock_time:
-            os.unlink(self.get_lock_file())
+        if os.path.exists(self.get_lock_file()):
+            created = datetime.datetime.fromtimestamp(
+                os.path.getctime(self.get_lock_file()))
+            seconds = (datetime.datetime.now() - created).seconds
+            if seconds > self._lock_time:
+                os.unlink(self.get_lock_file())
 
     def is_run(self):
         self._cleanup_lock()
