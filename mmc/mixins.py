@@ -48,6 +48,7 @@ class BaseCommandMixin(object):
         self._mmc_lock = get_lock_instance(self._mmc_script)
         self._mmc_exc_info = None
         self._mmc_hostname = socket.gethostname()
+        self._mmc_log_instance = None
 
     def __mmc_one_copy(self):
         try:
@@ -91,8 +92,24 @@ class BaseCommandMixin(object):
 
     def execute(self, *args, **options):
         self.__mmc_init(*args, **options)
+        self.__mmc_log_start()
         self.__mmc_execute(*args, **options)
         self.__mmc_done()
+
+    def __mmc_log_start(self):
+        from mmc.models import MMCLog
+
+        self._mmc_log_instance = MMCLog.logging(
+            start=self._mmc_start_date,
+            hostname=self._mmc_hostname,
+            script=self._mmc_script,
+            elapsed=0.00,
+            success=None,
+            error_message="",
+            traceback="",
+            sys_argv=' '.join(map(unicode, sys.argv)),
+            memory=0.00
+        )
 
     def __mmc_store_log(self):
         try:
@@ -101,6 +118,7 @@ class BaseCommandMixin(object):
             memory = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 
             MMCLog.logging(
+                instance=self._mmc_log_instance,
                 start=self._mmc_start_date,
                 hostname=self._mmc_hostname,
                 script=self._mmc_script,

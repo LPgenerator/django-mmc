@@ -51,7 +51,7 @@ class MMCLog(models.Model):
     elapsed = models.FloatField()
     hostname = models.ForeignKey(MMCHost)
     script = models.ForeignKey(MMCScript)
-    success = models.BooleanField(default=False)
+    success = models.NullBooleanField(default=None)
     error_message = models.TextField(blank=True, null=True)
     traceback = models.TextField(blank=True, null=True)
     sys_argv = models.CharField(max_length=255, blank=True, null=True)
@@ -70,11 +70,19 @@ class MMCLog(models.Model):
             name=kwargs['script'])[0]
         kwargs['hostname'] = MMCHost.objects.get_or_create(
             name=kwargs['hostname'])[0]
+        instance = kwargs.pop('instance', None)
+
+        def do_save():
+            if instance:
+                return cls.objects.filter(pk=instance.pk).update(**kwargs)
+            else:
+                return cls.objects.create(**kwargs)
 
         if not kwargs['script'].ignore and not kwargs['hostname'].ignore:
-            cls.objects.create(**kwargs)
-        elif not kwargs['success'] and kwargs['script'].save_on_error:
-            cls.objects.create(**kwargs)
+            return do_save()
+
+        if not kwargs['success'] and kwargs['script'].save_on_error:
+            return do_save()
 
 
 class MMCEmail(models.Model):
