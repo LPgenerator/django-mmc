@@ -149,7 +149,7 @@ MMC_LOCK_TYPE = 'FileLock'
 # }
 
 # Mail subject, for send any errors on your script
-MMC_SUBJECT = '[MMC] Errors'
+MMC_SUBJECT = '[MMC] Error: %(host)s: %(script)s'
 
 # Enable sentry notification
 MMC_SENTRY_NOTIFICATION = True

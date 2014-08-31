@@ -8,6 +8,7 @@ import socket
 import atexit
 import time
 import sys
+import os
 
 from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
@@ -46,6 +47,7 @@ class BaseCommandMixin(object):
         self._mmc_script = self.__module__.split('.')[-1]
         self._mmc_lock = get_lock_instance(self._mmc_script)
         self._mmc_exc_info = None
+        self._mmc_hostname = socket.gethostname()
 
     def __mmc_one_copy(self):
         try:
@@ -100,7 +102,7 @@ class BaseCommandMixin(object):
 
             MMCLog.logging(
                 start=self._mmc_start_date,
-                hostname=socket.gethostname(),
+                hostname=self._mmc_hostname,
                 script=self._mmc_script,
                 elapsed="%0.2f" % (time.time() - self._mmc_start_time),
                 success=self._mmc_success,
@@ -116,14 +118,16 @@ class BaseCommandMixin(object):
         if not self._mmc_success and EMAIL_NOTIFICATION:
             from mmc.models import MMCEmail
 
-            MMCEmail.send(self._mmc_traceback)
+            MMCEmail.send(
+                self._mmc_hostname, self._mmc_script, self._mmc_traceback)
 
     def __mmc_send2sentry(self):
         if not self._mmc_success and SENTRY_NOTIFICATION:
             try:
                 from raven.contrib.django.raven_compat.models import client
 
-                client.captureException(exc_info=self._mmc_exc_info)
+                client.captureException(
+                    exc_info=self._mmc_exc_info, extra=dict(os.environ))
             except ImportError:
                 pass
 

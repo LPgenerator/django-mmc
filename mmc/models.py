@@ -93,12 +93,15 @@ class MMCEmail(models.Model):
         verbose_name_plural = 'Emails'
 
     @classmethod
-    def send(cls, message):
+    def send(cls, host_name, script_name, message):
         try:
             emails = list(cls.objects.values_list(
                 'email', flat=True).filter(is_active=True))
+            subject = SUBJECT % dict(script=script_name, host=host_name)
+
             if emails:
                 send_mail(
-                    SUBJECT, message, settings.DEFAULT_FROM_EMAIL, emails)
+                    subject, message, settings.DEFAULT_FROM_EMAIL, emails
+                )
         except Exception, msg:
             print '[MMC]', msg.__unicode__()

@@ -9,7 +9,7 @@ def get_settings(key, default):
     return getattr(settings, key, default)
 
 
-SUBJECT = get_settings('MMC_SUBJECT', '[MMC] Errors')
+SUBJECT = get_settings('MMC_SUBJECT', '[MMC] Error: %(host)s: %(script)s')
 
 REDIS_CONFIG = get_settings('MMC_REDIS_CONFIG', {
     'host': 'localhost', 'port': 6379,
