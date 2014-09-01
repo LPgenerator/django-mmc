@@ -116,6 +116,8 @@ class BaseCommandMixin(object):
             )
         except DatabaseError:
             pass
+        except Exception, msg:
+            print '[MMC] Logging broken with message:', msg.__unicode__()
 
     def __mmc_store_log(self):
         try:
