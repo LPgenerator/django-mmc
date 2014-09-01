@@ -126,6 +126,7 @@ class BaseCommandMixin(object):
 
             utime = resources.ru_utime - self._mmc_resources.ru_utime
             stime = resources.ru_stime - self._mmc_resources.ru_stime
+            div = 1024.0 if 'linux' in sys.platform else 1048576.0
 
             MMCLog.logging(
                 instance=self._mmc_log_instance,
@@ -137,7 +138,7 @@ class BaseCommandMixin(object):
                 error_message=self._mmc_error_message,
                 traceback=self._mmc_traceback,
                 sys_argv=' '.join(map(unicode, sys.argv)),
-                memory="%0.2f" % (memory / 1048576.0),
+                memory="%0.2f" % (memory / div),
                 cpu_time="%0.2f" % (utime + stime),
             )
         except Exception, msg:
@@ -157,7 +158,7 @@ class BaseCommandMixin(object):
 
                 client.captureException(
                     exc_info=self._mmc_exc_info, extra=dict(os.environ))
-            except ImportError:
+            except:
                 pass
 
     def __mmc_print_log(self):
@@ -172,9 +173,9 @@ class BaseCommandMixin(object):
 
     def _mmc_at_exit_callback(self, *args, **kwargs):
         self.__mmc_store_log()
+        self._mmc_lock.unlock()
         self.__mmc_send_mail()
         self.__mmc_send2sentry()
-        self._mmc_lock.unlock()
         self.__mmc_print_log()
 
 

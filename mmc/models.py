@@ -116,7 +116,8 @@ class MMCEmail(models.Model):
 
             if emails:
                 send_mail(
-                    subject, message, settings.DEFAULT_FROM_EMAIL, emails
+                    subject, message, settings.DEFAULT_FROM_EMAIL, emails,
+                    fail_silently=True
                 )
         except Exception, msg:
             print '[MMC]', msg.__unicode__()
