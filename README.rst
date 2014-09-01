@@ -104,6 +104,23 @@ Logs about execution not be stored, but if you got any error on your commands,
 you will be notified to emails.
 
 
+Cron debug
+----------
+For debug any messages or some errors on app, run commands with example below:
+
+.. code-block:: bash
+
+    SHELL=/bin/bash
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+    MAILTO=root@localhost
+    PYTHON_BIN=/home/user/example.com/venv/bin/python
+    MANAGE_PY=/home/user/example.com/www/manage.py
+    LOG_FILE=/var/log/mmc.cron.log
+
+    # Project commands
+    50 2 * * * $PYTHON_BIN $MANAGE_PY clean >> $LOG_FILE 2>&1
+
+
 Screenshots
 -----------
 .. image:: /screenshots/log_changelist.jpg
