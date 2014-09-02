@@ -121,6 +121,11 @@ For debug any messages or some errors on app, run commands with example below:
     50 2 * * * $PYTHON_BIN $MANAGE_PY clean >> $LOG_FILE 2>&1
 
 
+Publications
+------------
+* `Completely installation and usage on production <http://habrahabr.ru/post/223151/>`_.
+
+
 Screenshots
 -----------
 .. image:: /screenshots/log_changelist.jpg
