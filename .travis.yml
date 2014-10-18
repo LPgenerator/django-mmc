@@ -8,15 +8,15 @@ install:
   - pip install -e .
   - pip install -r requirements/tests.txt Django==$DJANGO
 before_script:
-  - flake8 --exclude=migrations mmc
+  - flake8 --exclude=migrations,south_migrations mmc
 script:
   - make test
   - make coverage
 env:
   - DJANGO=1.3.7
-  - DJANGO=1.4.13
-  - DJANGO=1.5.8
-  - DJANGO=1.6.5
+  - DJANGO=1.4.15
+  - DJANGO=1.5.10
+  - DJANGO=1.6.7
 branches:
   only:
     - master

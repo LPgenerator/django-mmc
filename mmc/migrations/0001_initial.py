@@ -1,85 +1,85 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'MMCHost'
-        db.create_table('mmc_mmchost', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
-        ))
-        db.send_create_signal('mmc', ['MMCHost'])
-
-        # Adding model 'MMCScript'
-        db.create_table('mmc_mmcscript', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
-        ))
-        db.send_create_signal('mmc', ['MMCScript'])
-
-        # Adding model 'MMCLog'
-        db.create_table('mmc_mmclog', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
-            ('start', self.gf('django.db.models.fields.DateTimeField')()),
-            ('end', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('elapsed', self.gf('django.db.models.fields.FloatField')()),
-            ('hostname', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['mmc.MMCHost'])),
-            ('script', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['mmc.MMCScript'])),
-            ('success', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('error_message', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('traceback', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('sys_argv', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-        ))
-        db.send_create_signal('mmc', ['MMCLog'])
+from django.db import models, migrations
 
 
-    def backwards(self, orm):
-        
-        # Deleting model 'MMCHost'
-        db.delete_table('mmc_mmchost')
+class Migration(migrations.Migration):
 
-        # Deleting model 'MMCScript'
-        db.delete_table('mmc_mmcscript')
+    dependencies = [
+    ]
 
-        # Deleting model 'MMCLog'
-        db.delete_table('mmc_mmclog')
-
-
-    models = {
-        'mmc.mmchost': {
-            'Meta': {'object_name': 'MMCHost'},
-            'created': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
-        },
-        'mmc.mmclog': {
-            'Meta': {'object_name': 'MMCLog'},
-            'created': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'elapsed': ('django.db.models.fields.FloatField', [], {}),
-            'end': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'error_message': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'hostname': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['mmc.MMCHost']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'script': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['mmc.MMCScript']"}),
-            'start': ('django.db.models.fields.DateTimeField', [], {}),
-            'success': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'sys_argv': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'traceback': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'mmc.mmcscript': {
-            'Meta': {'object_name': 'MMCScript'},
-            'created': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
-        }
-    }
-
-    complete_apps = ['mmc']
+    operations = [
+        migrations.CreateModel(
+            name='MMCEmail',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateField(auto_now=True)),
+                ('email', models.EmailField(help_text=b'Email will be used for send all exceptions from command.', max_length=75)),
+                ('is_active', models.BooleanField(default=True, help_text=b'Email may be switched off for a little while.')),
+            ],
+            options={
+                'verbose_name': 'Email',
+                'verbose_name_plural': 'Emails',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='MMCHost',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateField(auto_now=True)),
+                ('name', models.CharField(unique=True, max_length=255)),
+                ('ignore', models.BooleanField(default=False, help_text=b'All logs from all scripts on this host will be ignored.')),
+            ],
+            options={
+                'verbose_name': 'Host',
+                'verbose_name_plural': 'Hosts',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='MMCLog',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateField(auto_now=True)),
+                ('start', models.DateTimeField()),
+                ('end', models.DateTimeField(auto_now=True)),
+                ('elapsed', models.FloatField()),
+                ('success', models.NullBooleanField(default=None)),
+                ('error_message', models.TextField(null=True, blank=True)),
+                ('traceback', models.TextField(null=True, blank=True)),
+                ('sys_argv', models.CharField(max_length=255, null=True, blank=True)),
+                ('memory', models.FloatField(default=0.0)),
+                ('cpu_time', models.FloatField(default=0.0)),
+                ('hostname', models.ForeignKey(to='mmc.MMCHost')),
+            ],
+            options={
+                'verbose_name': 'Log',
+                'verbose_name_plural': 'Logs',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='MMCScript',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateField(auto_now=True)),
+                ('name', models.CharField(unique=True, max_length=255)),
+                ('ignore', models.BooleanField(default=False, help_text=b'All logs from this script will be ignored.')),
+                ('one_copy', models.BooleanField(default=False, help_text=b'Only one copy of this script will be run.')),
+                ('save_on_error', models.BooleanField(default=False, help_text=b'This flag used only for ignored commands.')),
+            ],
+            options={
+                'verbose_name': 'Script',
+                'verbose_name_plural': 'Scripts',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='mmclog',
+            name='script',
+            field=models.ForeignKey(to='mmc.MMCScript'),
+            preserve_default=True,
+        ),
+    ]
