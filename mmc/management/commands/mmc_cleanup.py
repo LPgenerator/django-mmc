@@ -9,6 +9,7 @@ from django.core.management.base import BaseCommand
 from django.utils.timezone import now
 
 from mmc.models import MMCHost, MMCLog, MMCScript
+from mmc.defaults import CLEANUP_IGNORED
 
 
 class Command(BaseCommand):
@@ -34,10 +35,17 @@ class Command(BaseCommand):
     def _cleanup_model(self, model):
         model.objects.filter(created__lte=self.days_delta).delete()
 
+    @staticmethod
+    def _cleanup_ignored():
+        if CLEANUP_IGNORED is True:
+            MMCLog.objects.filter(
+                script__ignore=True, script__save_on_error=False).delete()
+
     def _cleanup(self):
         self._cleanup_model(MMCScript)
         self._cleanup_model(MMCHost)
         self._cleanup_model(MMCLog)
+        self._cleanup_ignored()
 
     def handle(self, **options):
         self._set_delta(options)
