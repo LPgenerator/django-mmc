@@ -16,7 +16,7 @@ class MMCLogAdmin(admin.ModelAdmin):
         'sys_argv', 'success', 'error_message', 'memory', 'cpu_time')
     fields = (
         'start', 'end', 'elapsed', 'hostname', 'script', 'memory', 'cpu_time',
-        'sys_argv', 'success', 'error_message', 'traceback',)
+        'sys_argv', 'success', 'error_message', 'traceback', 'stdout_messages')
 
     date_hierarchy = 'created'
     ordering = ('-id',)

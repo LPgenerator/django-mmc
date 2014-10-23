@@ -12,6 +12,7 @@ import os
 
 from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
+from django.utils.encoding import force_unicode
 from django.utils.encoding import smart_str
 from django.db.utils import DatabaseError
 
@@ -31,6 +32,21 @@ def mmc_is_test():
     return sys.argv[1:3] == ['test', 'mmc']
 
 
+class StdOut(object):
+    def __init__(self):
+        self.data = []
+
+    def write(self, message):
+        self.data.append(message)
+        try:
+            sys.__stdout__.write(message)
+        except Exception, msg:
+            sys.stderr.write(msg.__str__())
+
+    def get_stdout(self):
+        return self.data
+
+
 class BaseCommandMixin(object):
     def __init__(self):
         if hasattr(self, '_no_monkey'):
@@ -38,6 +54,7 @@ class BaseCommandMixin(object):
         else:
             super(BaseCommandMixin, self).__init__()
 
+        sys.stdout = StdOut()
         self._mmc_start_date = now()
         self._mmc_start_time = time.time()
         self._mmc_elapsed = None
@@ -142,9 +159,18 @@ class BaseCommandMixin(object):
                 sys_argv=' '.join(map(unicode, sys.argv)),
                 memory="%0.2f" % (memory / div),
                 cpu_time="%0.2f" % (utime + stime),
+                stdout_messages=self.__mmc_get_stdout()
             )
         except Exception, msg:
             print '[MMC] Logging broken with message:', msg.__unicode__()
+
+    def __mmc_get_stdout(self):
+        if hasattr(sys.stdout, 'get_stdout'):
+            try:
+                return u'\n'.join(map(force_unicode, sys.stdout.get_stdout()))
+            except:
+                return repr(sys.stdout.get_stdout())
+        return ''
 
     def __mmc_send_mail(self):
         if not self._mmc_success and EMAIL_NOTIFICATION:
