@@ -121,6 +121,12 @@ For debug any messages or some errors on app, run commands with example below:
     50 2 * * * $PYTHON_BIN $MANAGE_PY clean >> $LOG_FILE 2>&1
 
 
+Management commands
+-------------------
+mmc_cleanup - clean logs by days/date
+mmc_notify - notify users, when script is killed by OS
+
+
 Publications
 ------------
 * `Completely installation and usage on production <http://habrahabr.ru/post/223151/>`_.

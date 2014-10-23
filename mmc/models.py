@@ -57,6 +57,7 @@ class MMCLog(models.Model):
     sys_argv = models.CharField(max_length=255, blank=True, null=True)
     memory = models.FloatField(default=0.00)
     cpu_time = models.FloatField(default=0.00)
+    was_notified = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.script.name
