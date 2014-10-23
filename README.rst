@@ -123,8 +123,9 @@ For debug any messages or some errors on app, run commands with example below:
 
 Management commands
 -------------------
-mmc_cleanup - clean logs by days/date
-mmc_notify - notify users, when script is killed by OS
+``mmc_cleanup`` - clean logs by days/date
+
+``mmc_notify`` - notify users, when script is killed by OS
 
 
 Publications
