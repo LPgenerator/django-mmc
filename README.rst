@@ -121,6 +121,21 @@ For debug any messages or some errors on app, run commands with example below:
     50 2 * * * $PYTHON_BIN $MANAGE_PY clean >> $LOG_FILE 2>&1
 
 
+Multi-instance lock
+-------------------
+
+If you are using "One copy" functionality, and command is run on multiple
+servers, you can use Memcached/Redis lock. Just configure it on settings.py:
+
+.. code-block:: python
+
+    MMC_LOCK_TYPE = 'MemcacheLock'
+
+    MMC_MEMCACHED_CONFIG = {
+        'servers': ['127.0.0.1:11211'], 'debug': 0
+    }
+
+
 Management commands
 -------------------
 ``mmc_cleanup`` - clean logs by days/date
