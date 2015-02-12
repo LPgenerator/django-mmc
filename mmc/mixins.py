@@ -43,6 +43,12 @@ class StdOut(object):
         except Exception, msg:
             sys.stderr.write(msg.__str__())
 
+    def __getattr__(self, method):
+        def call_method(*args, **kwargs):
+            return getattr(sys.__stdout__, method)(*args, **kwargs)
+
+        return call_method
+
     def get_stdout(self):
         return self.data
 
@@ -54,7 +60,11 @@ class BaseCommandMixin(object):
         else:
             super(BaseCommandMixin, self).__init__()
 
-        sys.stdout = StdOut()
+        try:
+            __IPYTHON__
+        except NameError:
+            sys.stdout = StdOut()
+
         self._mmc_start_date = now()
         self._mmc_start_time = time.time()
         self._mmc_elapsed = None

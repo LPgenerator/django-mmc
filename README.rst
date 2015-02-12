@@ -140,7 +140,7 @@ Management commands
 -------------------
 ``mmc_cleanup`` - clean logs by days/date
 
-``mmc_notify`` - notify users, when script is killed by OS
+``mmc_notify`` - notify users, when script is killed by OS (that actual for long tasks and for big databases)
 
 
 Publications
