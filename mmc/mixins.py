@@ -177,7 +177,7 @@ class BaseCommandMixin(object):
     def __mmc_get_stdout(self):
         if hasattr(sys.stdout, 'get_stdout'):
             try:
-                return u'\n'.join(map(force_unicode, sys.stdout.get_stdout()))
+                return u''.join(map(force_unicode, sys.stdout.get_stdout()))
             except:
                 return repr(sys.stdout.get_stdout())
         return ''
