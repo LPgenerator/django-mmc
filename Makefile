@@ -11,7 +11,7 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 pep8:
-	flake8 --exclude=migrations mmc
+	flake8 --ignore=E402 --exclude=migrations,south_migrations mmc
 
 release: clean
 	python setup.py register sdist upload --sign
