@@ -40,3 +40,4 @@ docs/build
 db.sqlite
 *.sh
 TODO
+*.bak

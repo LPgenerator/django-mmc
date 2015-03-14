@@ -98,6 +98,10 @@ class MMCEmail(models.Model):
     created = models.DateField(auto_now=True, editable=False)
     email = models.EmailField(
         help_text='Email will be used for send all exceptions from command.')
+    ignore = models.ManyToManyField(
+        MMCScript, blank=True, null=True,
+        help_text='Helpful for different teams. '
+                  'Choose script which you want to ignore.')
     is_active = models.BooleanField(
         default=True,
         help_text='Email may be switched off for a little while.')
@@ -113,10 +117,11 @@ class MMCEmail(models.Model):
     def send(cls, host_name, script_name, message):
         try:
             emails = list(cls.objects.values_list(
-                'email', flat=True).filter(is_active=True))
-            subject = SUBJECT % dict(script=script_name, host=host_name)
-
+                'email', flat=True
+            ).filter(is_active=True).exclude(ignore__name=script_name))
             if emails:
+                subject = SUBJECT % dict(script=script_name, host=host_name)
+
                 send_mail(
                     subject, message, settings.DEFAULT_FROM_EMAIL, emails,
                     fail_silently=True
