@@ -23,7 +23,7 @@ except ImportError:
 
     now = datetime.now
 
-from .defaults import SENTRY_NOTIFICATION, EMAIL_NOTIFICATION
+from .defaults import SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT
 from .lock import get_lock_instance
 from .utils import monkey_mix
 
@@ -60,10 +60,11 @@ class BaseCommandMixin(object):
         else:
             super(BaseCommandMixin, self).__init__()
 
-        try:
-            __IPYTHON__
-        except NameError:
-            sys.stdout = StdOut()
+        if READ_STDOUT is True:
+            try:
+                __IPYTHON__
+            except NameError:
+                sys.stdout = StdOut()
 
         self._mmc_start_date = now()
         self._mmc_start_time = time.time()
