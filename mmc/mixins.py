@@ -215,6 +215,9 @@ class BaseCommandMixin(object):
     def __mmc_notification(self):
         from mmc.models import MMCEmail, MMCLog
 
+        if not self._mmc_log_instance or mmc_is_test():
+            return
+
         cls = MMCLog.objects.get(pk=self._mmc_log_instance.pk)
         if EMAIL_NOTIFICATION and cls.script.enable_triggers is True:
             script = cls.script
