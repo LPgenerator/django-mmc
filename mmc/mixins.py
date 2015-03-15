@@ -185,12 +185,21 @@ class BaseCommandMixin(object):
                 return repr(sys.stdout.get_stdout())
         return ''
 
+    def __mmc_get_msg_trace(self):
+        traceback_msg = ''
+        if hasattr(self._mmc_log_instance, 'pk'):
+            traceback_msg += '#%d\n\n' % self._mmc_log_instance.pk
+        traceback_msg += self._mmc_traceback
+        return traceback_msg
+
     def __mmc_send_mail(self):
         if not self._mmc_success and EMAIL_NOTIFICATION:
             from mmc.models import MMCEmail
 
             MMCEmail.send(
-                self._mmc_hostname, self._mmc_script, self._mmc_traceback)
+                self._mmc_hostname, self._mmc_script,
+                self.__mmc_get_msg_trace()
+            )
 
     def __mmc_send2sentry(self):
         if not self._mmc_success and SENTRY_NOTIFICATION:
