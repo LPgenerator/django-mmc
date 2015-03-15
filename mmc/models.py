@@ -1,9 +1,9 @@
 __author__ = 'gotlium'
 
 from django.db import models
-from django.conf import settings
 from django.utils.importlib import import_module
-from mmc.defaults import SUBJECT, MAIL_MODULE
+
+from mmc.defaults import SUBJECT, MAIL_MODULE, EMAIL_FROM
 
 
 class MMCHost(models.Model):
@@ -134,8 +134,7 @@ class MMCEmail(models.Model):
 
                 mail = import_module(MAIL_MODULE)
                 mail.send_mail(
-                    subject, message, settings.DEFAULT_FROM_EMAIL, emails,
-                    fail_silently=True
+                    subject, message, EMAIL_FROM, emails, fail_silently=True
                 )
         except Exception, msg:
             print '[MMC]', msg.__unicode__()
