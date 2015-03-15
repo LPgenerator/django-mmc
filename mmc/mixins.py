@@ -23,7 +23,9 @@ except ImportError:
 
     now = datetime.now
 
-from .defaults import SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT
+from .defaults import (
+    SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT, SUBJECT_LIMIT
+)
 from .lock import get_lock_instance
 from .utils import monkey_mix
 
@@ -210,9 +212,33 @@ class BaseCommandMixin(object):
                 ))
             sys.exit(1)
 
+    def __mmc_notification(self):
+        from mmc.models import MMCEmail, MMCLog
+
+        cls = MMCLog.objects.get(pk=self._mmc_log_instance.pk)
+        if EMAIL_NOTIFICATION and cls.script.enable_triggers is True:
+            script = cls.script
+            reason = []
+            text = ''
+
+            if script.trigger_cpu and cls.cpu_time > script.trigger_cpu:
+                reason.append(('cpu', cls.cpu_time, script.trigger_cpu))
+            if script.trigger_memory and cls.memory > script.trigger_memory:
+                reason.append(('memory', cls.memory, script.trigger_memory))
+            if script.trigger_time and cls.elapsed > script.trigger_time:
+                reason.append(('time', cls.elapsed, script.trigger_time))
+
+            if reason:
+                for data in reason:
+                    text += '%s: %f > %f\n' % data
+
+                MMCEmail.send(
+                    self._mmc_hostname, self._mmc_script, text, SUBJECT_LIMIT)
+
     def _mmc_at_exit_callback(self, *args, **kwargs):
         self.__mmc_store_log()
         self._mmc_lock.unlock()
+        self.__mmc_notification()
         self.__mmc_send_mail()
         self.__mmc_send2sentry()
         self.__mmc_print_log()

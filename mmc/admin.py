@@ -60,6 +60,14 @@ class MMCScriptAdmin(MMCHostAdmin):
     list_display = (
         'name', 'ignore', 'one_copy', 'save_on_error', 'created', 'id',)
     list_filter = ('ignore', 'one_copy', 'save_on_error')
+    fieldsets = [
+        ('Basic', {'fields': [
+            'ignore', 'one_copy', 'save_on_error'
+        ]}),
+        ('Triggers', {'fields': [
+            'enable_triggers', 'trigger_time', 'trigger_memory', 'trigger_cpu'
+        ]}),
+    ]
 
 
 class MMCEmailAdmin(admin.ModelAdmin):

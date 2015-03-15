@@ -32,6 +32,17 @@ class MMCScript(models.Model):
     save_on_error = models.BooleanField(
         default=False, help_text='This flag used only for ignored commands.')
 
+    trigger_cpu = models.FloatField(
+        null=True, blank=True, help_text='Set the threshold time for CPU')
+    trigger_memory = models.FloatField(
+        null=True, blank=True, help_text='Set the threshold MB for Memory')
+    trigger_time = models.FloatField(
+        null=True, blank=True, help_text='Set the threshold sec for execution')
+    enable_triggers = models.BooleanField(
+        default=False, help_text='Enable triggers for receive email '
+                                 'notification, if threshold of counters '
+                                 'will be exceeded')
+
     @classmethod
     def get_one_copy(cls, name):
         return cls.objects.get(name=name).one_copy
@@ -114,13 +125,13 @@ class MMCEmail(models.Model):
         verbose_name_plural = 'Emails'
 
     @classmethod
-    def send(cls, host_name, script_name, message):
+    def send(cls, host_name, script_name, message, subject=SUBJECT):
         try:
             emails = list(cls.objects.values_list(
                 'email', flat=True
             ).filter(is_active=True).exclude(ignore__name=script_name))
             if emails:
-                subject = SUBJECT % dict(script=script_name, host=host_name)
+                subject = subject % dict(script=script_name, host=host_name)
 
                 send_mail(
                     subject, message, settings.DEFAULT_FROM_EMAIL, emails,

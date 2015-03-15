@@ -10,6 +10,8 @@ def get_settings(key, default):
 
 
 SUBJECT = get_settings('MMC_SUBJECT', '[MMC] Error: %(host)s: %(script)s')
+SUBJECT_LIMIT = get_settings(
+    'MMC_SUBJECT_LIMIT', '[MMC] Limit exceeded: %(host)s: %(script)s')
 
 REDIS_CONFIG = get_settings('MMC_REDIS_CONFIG', {
     'host': 'localhost', 'port': 6379,
