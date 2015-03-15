@@ -1,10 +1,10 @@
 __author__ = 'gotlium'
 
-from django.core.mail import send_mail
 from django.db import models
 from django.conf import settings
 
-from mmc.defaults import SUBJECT
+from importlib import import_module
+from mmc.defaults import SUBJECT, MAIL_MODULE
 
 
 class MMCHost(models.Model):
@@ -133,7 +133,8 @@ class MMCEmail(models.Model):
             if emails:
                 subject = subject % dict(script=script_name, host=host_name)
 
-                send_mail(
+                mail = import_module(MAIL_MODULE)
+                mail.send_mail(
                     subject, message, settings.DEFAULT_FROM_EMAIL, emails,
                     fail_silently=True
                 )
