@@ -2,8 +2,7 @@ __author__ = 'gotlium'
 
 from django.db import models
 from django.conf import settings
-
-from importlib import import_module
+from django.utils.importlib import import_module
 from mmc.defaults import SUBJECT, MAIL_MODULE
 
 
