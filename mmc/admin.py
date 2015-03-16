@@ -74,6 +74,7 @@ class MMCEmailAdmin(admin.ModelAdmin):
     list_display = ('email', 'is_active', 'created', 'id',)
     list_filter = ('created', 'is_active',)
     list_display_links = ('email',)
+    filter_horizontal = ('ignore',)
 
     date_hierarchy = 'created'
     ordering = ('-id',)
