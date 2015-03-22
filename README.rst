@@ -47,21 +47,22 @@ Local demo installation
 
 .. code-block:: bash
 
-    $ sudo apt-get install virtualenvwrapper
+    $ sudo apt-get install -y virtualenvwrapper || brew install pyenv-virtualenvwrapper
+    $ source /usr/share/virtualenvwrapper/virtualenvwrapper.sh || source /usr/local/bin/virtualenvwrapper.sh
     $ mkvirtualenv django-mmc
-    $ git clone https://github.com/LPgenerator/django-mmc.git
+    $ git clone --depth 1 https://github.com/LPgenerator/django-mmc.git
     $ cd django-mmc
     $ python setup.py develop
     $ cd demo
     $ pip install -r ../requirements/dev.txt
-    $ python manage.py syncdb
+    $ python manage.py syncdb --noinput
+    $ python manage.py createsuperuser --username admin --email admin@local.host
     $ python manage.py test_command >& /dev/null
     $ python manage.py test_command_noargs >& /dev/null
     $ python manage.py test_command_error >& /dev/null
     $ python manage.py test_command_killed >& /dev/null
     $ python manage.py runserver >& /dev/null &
-    $ xdg-open http://127.0.0.1:8000/admin/mmc/mmclog/
-
+    $ xdg-open http://127.0.0.1:8000/admin/mmc/mmclog/ >& /dev/null || open http://127.0.0.1:8000/admin/mmc/mmclog/ >& /dev/null
 
 Configuration
 -------------
@@ -145,7 +146,8 @@ Management commands
 
 Publications
 ------------
-* `Completely installation and usage on production <http://habrahabr.ru/post/223151/>`_.
+* `Установка и использование с примерами на русском <http://habrahabr.ru/post/223151/>`_.
+* `Completely installation and usage with examples. Translated by Google <http://translate.google.com/translate?hl=en&sl=ru&tl=en&u=http://habrahabr.ru/post/223151/>`_.
 
 
 Screenshots
