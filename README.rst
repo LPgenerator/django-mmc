@@ -10,6 +10,12 @@ Django-mmc
 .. image:: https://pypip.in/d/django-mmc/badge.png
     :alt: Downloads from PyPi
     :target: https://crate.io/packages/django-mmc/
+.. image:: https://pypip.in/wheel/django-mmc/badge.png
+    :target: https://pypi.python.org/pypi/django-mmc/
+    :alt: Wheel
+.. image:: https://pypip.in/license/django-mmc/badge.png
+    :target: https://pypi.python.org/pypi/django-mmc/
+    :alt: License
 
 
 What's that
