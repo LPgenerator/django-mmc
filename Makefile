@@ -33,4 +33,4 @@ test:
 coverage:
 	cd demo && \
 	coverage run --branch --source=mmc ./manage.py test mmc && \
-	coverage report --omit="*/mmc/test*,*/mmc/migrations/*,*/mmc/admin*"
+	coverage report --omit="*/mmc/test*,*/mmc/migrations/*,*/mmc/south_migrations*,*/mmc/admin*,*/mmc/management/*"
