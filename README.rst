@@ -159,8 +159,11 @@ Publications
 Screenshots
 -----------
 .. image:: /screenshots/log_changelist.jpg
+.. image:: /screenshots/log_edit.jpg
 .. image:: /screenshots/script_changelist.jpg
+.. image:: /screenshots/script_edit.jpg
 .. image:: /screenshots/email_changelist.jpg
+.. image:: /screenshots/email_edit.jpg
 .. image:: /screenshots/hosts_changelist.jpg
 
 
