@@ -147,7 +147,9 @@ Management commands
 -------------------
 ``mmc_cleanup`` - clean logs by days/date
 
-``mmc_notify`` - notify users, when script is killed by OS (that actual for long tasks and for big databases)
+``mmc_notify`` - notify users, when script is killed by OS (that actual for long tasks and for big databases).
+For detailed check (by pid and name) you can install ``psutil``.
+
 
 
 Publications

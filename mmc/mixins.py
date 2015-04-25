@@ -172,7 +172,8 @@ class BaseCommandMixin(object):
                 sys_argv=' '.join(map(unicode, sys.argv)),
                 memory="%0.2f" % (memory / div),
                 cpu_time="%0.2f" % (utime + stime),
-                stdout_messages=self.__mmc_get_stdout()
+                stdout_messages=self.__mmc_get_stdout(),
+                pid=os.getpid(),
             )
         except Exception, msg:
             print '[MMC] Logging broken with message:', msg.__unicode__()

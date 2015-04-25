@@ -3,6 +3,7 @@
 __author__ = 'gotlium'
 
 import datetime
+import os
 
 from django.core.management.base import BaseCommand
 from django.utils.timezone import now
@@ -11,6 +12,18 @@ from mmc.models import MMCLog, MMCEmail
 
 
 class Command(BaseCommand):
+    @staticmethod
+    def check_pid(pid, proc_name):
+        try:
+            import psutil
+
+            if psutil.pid_exists(pid):
+                p = psutil.Process(pid)
+                if proc_name in p.cmdline():
+                    return True
+        except ImportError:
+            pass
+
     def handle(self, **options):
         day_ago = (now() - datetime.timedelta(days=1))
         two_day_ago = (day_ago - datetime.timedelta(days=1))
@@ -19,6 +32,8 @@ class Command(BaseCommand):
             created__range=[two_day_ago, day_ago])
 
         for log in log_list:
+            if self.check_pid(log.pid, log.script.name):
+                continue
             MMCEmail.send(
                 log.hostname.name, log.script.name,
                 'Maybe script "%s" was killed by OS kernel.' % log.script.name)

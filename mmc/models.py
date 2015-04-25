@@ -69,6 +69,7 @@ class MMCLog(models.Model):
     cpu_time = models.FloatField(default=0.00)
     was_notified = models.BooleanField(default=False)
     stdout_messages = models.TextField(blank=True, null=True)
+    pid = models.IntegerField(default=1)
 
     def __unicode__(self):
         return self.script.name
