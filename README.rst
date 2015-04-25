@@ -152,6 +152,13 @@ For detailed check (by pid and name) you can install ``psutil``.
 
 
 
+Sentry support
+--------------
+If you want receive notifications and detailed traceback to Sentry,
+you can install ``raven``, and configure project dsn settings.
+
+
+
 Publications
 ------------
 * `Установка и использование с примерами на русском <http://habrahabr.ru/post/223151/>`_.
