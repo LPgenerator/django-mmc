@@ -1,7 +1,7 @@
 import sys
 
 
-VERSION = (1, 6, 'b3')
+VERSION = (1, 6, 'b4')
 
 
 def get_version():
