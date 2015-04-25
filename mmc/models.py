@@ -1,7 +1,10 @@
 __author__ = 'gotlium'
 
 from django.db import models
-from django.utils.importlib import import_module
+try:
+    from django.utils.importlib import import_module
+except ImportError:
+    from importlib import import_module
 
 from mmc.defaults import SUBJECT, MAIL_MODULE, EMAIL_FROM
 from mmc import python_2_unicode_compatible
@@ -147,5 +150,4 @@ class MMCEmail(models.Model):
                     subject, message, EMAIL_FROM, emails, fail_silently=True
                 )
         except Exception as err:
-            # print '[MMC]', msg.__unicode__()
             print("[MMC] {0}".format(err))
