@@ -12,9 +12,13 @@ import os
 
 from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
-from django.utils.encoding import force_unicode
 from django.utils.encoding import smart_str
 from django.db.utils import DatabaseError
+
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode
 
 try:
     from django.utils.timezone import now
@@ -23,11 +27,12 @@ except ImportError:
 
     now = datetime.now
 
-from .defaults import (
+from mmc.defaults import (
     SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT, SUBJECT_LIMIT
 )
-from .lock import get_lock_instance
-from .utils import monkey_mix
+from mmc.lock import get_lock_instance
+from mmc.utils import monkey_mix
+from mmc import PY2
 
 
 def mmc_is_test():
@@ -40,10 +45,11 @@ class StdOut(object):
 
     def write(self, message):
         self.data.append(message)
+
         try:
             sys.__stdout__.write(message)
-        except Exception, msg:
-            sys.stderr.write(msg.__str__())
+        except Exception as err:
+            sys.stderr.write("{0}".format(err))
 
     def __getattr__(self, method):
         def call_method(*args, **kwargs):
@@ -84,7 +90,7 @@ class BaseCommandMixin(object):
 
     def __mmc_one_copy(self):
         try:
-            from models import MMCScript
+            from mmc.models import MMCScript
 
             try:
                 if MMCScript.get_one_copy(self._mmc_script):
@@ -92,8 +98,8 @@ class BaseCommandMixin(object):
                     self._mmc_lock.lock()
             except MMCScript.DoesNotExist:
                 pass
-        except Exception, msg:
-            print '[MMC]', msg.__unicode__()
+        except Exception as err:
+            print("[MMC] {0}".format(err))
 
     def __mmc_init(self, *args, **options):
         if not mmc_is_test():
@@ -110,9 +116,12 @@ class BaseCommandMixin(object):
     def __mmc_execute(self, *args, **options):
         try:
             self.__mmc_run(*args, **options)
-        except Exception as ex:
+        except Exception as err:
             self._mmc_success = False
-            self._mmc_error_message = ex.__unicode__()
+            if PY2 is True:
+                self._mmc_error_message = err.__unicode__()
+            else:
+                self._mmc_error_message = err.__str__()
             self._mmc_traceback = traceback.format_exc()
             self._mmc_exc_info = sys.exc_info()
             if not mmc_is_test():
@@ -128,6 +137,11 @@ class BaseCommandMixin(object):
         self.__mmc_execute(*args, **options)
         self.__mmc_done()
 
+    def __mmc_get_sys_argv(self):
+        if PY2 is True:
+            return ' '.join(map(unicode, sys.argv))
+        return ' '.join(map(str, sys.argv))
+
     def __mmc_log_start(self):
         try:
             from mmc.models import MMCLog
@@ -140,14 +154,14 @@ class BaseCommandMixin(object):
                 success=None,
                 error_message="",
                 traceback="",
-                sys_argv=' '.join(map(unicode, sys.argv)),
+                sys_argv=self.__mmc_get_sys_argv(),
                 memory=0.00,
                 cpu_time=0.00
             )
         except DatabaseError:
             pass
-        except Exception, msg:
-            print '[MMC] Logging broken with message:', msg.__unicode__()
+        except Exception as err:
+            print("[MMC] Logging broken with message: {0}".format(err))
 
     def __mmc_store_log(self):
         try:
@@ -169,14 +183,14 @@ class BaseCommandMixin(object):
                 success=self._mmc_success,
                 error_message=self._mmc_error_message,
                 traceback=self._mmc_traceback,
-                sys_argv=' '.join(map(unicode, sys.argv)),
+                sys_argv=self.__mmc_get_sys_argv(),
                 memory="%0.2f" % (memory / div),
                 cpu_time="%0.2f" % (utime + stime),
                 stdout_messages=self.__mmc_get_stdout(),
                 pid=os.getpid(),
             )
-        except Exception, msg:
-            print '[MMC] Logging broken with message:', msg.__unicode__()
+        except Exception as err:
+            print("[MMC] Logging broken with message: {0}".format(err))
 
     def __mmc_get_stdout(self):
         if hasattr(sys.stdout, 'get_stdout'):
@@ -190,7 +204,8 @@ class BaseCommandMixin(object):
         traceback_msg = ''
         if hasattr(self._mmc_log_instance, 'pk'):
             traceback_msg += '#%d\n\n' % self._mmc_log_instance.pk
-        traceback_msg += self._mmc_traceback
+        if self._mmc_traceback:
+            traceback_msg += self._mmc_traceback
         return traceback_msg
 
     def __mmc_send_mail(self):
@@ -215,7 +230,7 @@ class BaseCommandMixin(object):
     def __mmc_print_log(self):
         if not self._mmc_success and not mmc_is_test():
             if self._mmc_show_traceback:
-                print self._mmc_traceback
+                print(self._mmc_traceback)
             else:
                 sys.stderr.write(smart_str(
                     'Error: %s\n' % self.style.ERROR(self._mmc_error_message)

@@ -7,7 +7,7 @@ import time
 import sys
 import os
 
-import defaults
+from mmc import defaults
 
 
 class AbstractLock(object):

@@ -1,7 +1,7 @@
 __author__ = 'gotlium'
 
 from django.contrib import admin
-from models import MMCLog, MMCScript, MMCHost, MMCEmail
+from mmc.models import MMCLog, MMCScript, MMCHost, MMCEmail
 
 
 class MMCLogAdmin(admin.ModelAdmin):

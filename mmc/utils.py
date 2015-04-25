@@ -1,6 +1,7 @@
 __author__ = 'gotlium'
 
 import inspect
+import mmc
 
 
 class MonkeyProxy(object):
@@ -17,7 +18,7 @@ def monkey_mix(cls, mixin, methods=None):
     cls._no_monkey = MonkeyProxy(cls)
 
     if methods is None:
-        isboundmethod = inspect.ismethod
+        isboundmethod = inspect.isfunction if mmc.PY3 else inspect.ismethod
         methods = inspect.getmembers(mixin, isboundmethod)
     else:
         methods = [(m, getattr(mixin, m)) for m in methods]
@@ -25,4 +26,4 @@ def monkey_mix(cls, mixin, methods=None):
     for name, method in methods:
         if hasattr(cls, name):
             setattr(cls._no_monkey, name, getattr(cls, name))
-        setattr(cls, name, method.im_func)
+        setattr(cls, name, method.im_func if mmc.PY2 else method)

@@ -4,8 +4,10 @@ from django.db import models
 from django.utils.importlib import import_module
 
 from mmc.defaults import SUBJECT, MAIL_MODULE, EMAIL_FROM
+from mmc import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class MMCHost(models.Model):
     created = models.DateField(auto_now=True)
     name = models.CharField(max_length=255, unique=True)
@@ -17,10 +19,11 @@ class MMCHost(models.Model):
         verbose_name = 'Host'
         verbose_name_plural = 'Hosts'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class MMCScript(models.Model):
     created = models.DateField(auto_now=True)
     name = models.CharField(max_length=255, unique=True)
@@ -54,10 +57,11 @@ class MMCScript(models.Model):
         verbose_name = 'Script'
         verbose_name_plural = 'Scripts'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class MMCLog(models.Model):
     created = models.DateField(auto_now=True)
     start = models.DateTimeField()
@@ -75,7 +79,7 @@ class MMCLog(models.Model):
     stdout_messages = models.TextField(blank=True, null=True)
     pid = models.IntegerField(default=1)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.script.name
 
     class Meta:
@@ -109,6 +113,7 @@ class MMCLog(models.Model):
         ).filter(script__name=script_name).order_by('-elapsed')[:1][0]) + 1)
 
 
+@python_2_unicode_compatible
 class MMCEmail(models.Model):
     created = models.DateField(auto_now=True, editable=False)
     email = models.EmailField(
@@ -121,7 +126,7 @@ class MMCEmail(models.Model):
         default=True,
         help_text='Email may be switched off for a little while.')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.email
 
     class Meta:
@@ -141,5 +146,6 @@ class MMCEmail(models.Model):
                 mail.send_mail(
                     subject, message, EMAIL_FROM, emails, fail_silently=True
                 )
-        except Exception, msg:
-            print '[MMC]', msg.__unicode__()
+        except Exception as err:
+            # print '[MMC]', msg.__unicode__()
+            print("[MMC] {0}".format(err))
