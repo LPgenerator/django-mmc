@@ -10,6 +10,11 @@ import time
 import sys
 import os
 
+try:
+    import thread
+except ImportError:
+    import _thread as thread
+
 from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
 from django.utils.encoding import smart_str
@@ -28,7 +33,8 @@ except ImportError:
     now = datetime.now
 
 from mmc.defaults import (
-    SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT, SUBJECT_LIMIT
+    SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT,
+    SUBJECT_LIMIT, REAL_TIME_UPDATE
 )
 from mmc.lock import get_lock_instance
 from mmc.utils import monkey_mix
@@ -77,7 +83,7 @@ class BaseCommandMixin(object):
         self._mmc_start_date = now()
         self._mmc_start_time = time.time()
         self._mmc_elapsed = None
-        self._mmc_success = True
+        self._mmc_success = None
         self._mmc_error_message = None
         self._mmc_traceback = None
         self._mmc_show_traceback = False
@@ -87,6 +93,8 @@ class BaseCommandMixin(object):
         self._mmc_hostname = socket.gethostname()
         self._mmc_log_instance = None
         self._mmc_resources = resource.getrusage(resource.RUSAGE_SELF)
+        self._mmc_mon_is_run = None
+        self._mmc_mon_is_ok = False
 
     def __mmc_one_copy(self):
         try:
@@ -101,7 +109,27 @@ class BaseCommandMixin(object):
         except Exception as err:
             print("[MMC] {0}".format(err))
 
-    def __mmc_init(self, *args, **options):
+    def __mmc_monitor(self):
+        while self._mmc_mon_is_run is True:
+            self.__mmc_store_log()
+            time.sleep(REAL_TIME_UPDATE)
+        self._mmc_mon_is_ok = True
+
+    def __mmc_run_monitor(self):
+        if self._mmc_log_instance and self._mmc_log_instance.script.real_time:
+            with thread.allocate_lock():
+                if self._mmc_mon_is_run is None:
+                    self._mmc_mon_is_run = True
+                    thread.start_new_thread(self.__mmc_monitor, ())
+
+    def __mmc_stop_monitor(self):
+        self._mmc_mon_is_run = False
+        if self._mmc_log_instance and self._mmc_log_instance.script.real_time:
+            self._mmc_mon_is_run = False
+            while self._mmc_mon_is_ok is False:
+                time.sleep(1)
+
+    def __mmc_init(self, **options):
         if not mmc_is_test():
             self.__mmc_one_copy()
             atexit.register(self._mmc_at_exit_callback)
@@ -116,6 +144,7 @@ class BaseCommandMixin(object):
     def __mmc_execute(self, *args, **options):
         try:
             self.__mmc_run(*args, **options)
+            self._mmc_success = True
         except Exception as err:
             self._mmc_success = False
             if PY2 is True:
@@ -132,8 +161,9 @@ class BaseCommandMixin(object):
             self._mmc_at_exit_callback()
 
     def execute(self, *args, **options):
-        self.__mmc_init(*args, **options)
+        self.__mmc_init(**options)
         self.__mmc_log_start()
+        self.__mmc_run_monitor()
         self.__mmc_execute(*args, **options)
         self.__mmc_done()
 
@@ -209,7 +239,7 @@ class BaseCommandMixin(object):
         return traceback_msg
 
     def __mmc_send_mail(self):
-        if not self._mmc_success and EMAIL_NOTIFICATION:
+        if self._mmc_success is False and EMAIL_NOTIFICATION:
             from mmc.models import MMCEmail
 
             MMCEmail.send(
@@ -218,7 +248,7 @@ class BaseCommandMixin(object):
             )
 
     def __mmc_send2sentry(self):
-        if not self._mmc_success and SENTRY_NOTIFICATION:
+        if self._mmc_success is False and SENTRY_NOTIFICATION:
             try:
                 from raven.contrib.django.raven_compat.models import client
 
@@ -228,14 +258,13 @@ class BaseCommandMixin(object):
                 pass
 
     def __mmc_print_log(self):
-        if not self._mmc_success and not mmc_is_test():
+        if self._mmc_success is False and not mmc_is_test():
             if self._mmc_show_traceback:
                 print(self._mmc_traceback)
             else:
                 sys.stderr.write(smart_str(
                     'Error: %s\n' % self.style.ERROR(self._mmc_error_message)
                 ))
-            sys.exit(1)
 
     def __mmc_notification(self):
         from mmc.models import MMCEmail, MMCLog
@@ -264,6 +293,7 @@ class BaseCommandMixin(object):
                     self._mmc_hostname, self._mmc_script, text, SUBJECT_LIMIT)
 
     def _mmc_at_exit_callback(self, *args, **kwargs):
+        self.__mmc_stop_monitor()
         self.__mmc_store_log()
         self._mmc_lock.unlock()
         self.__mmc_notification()

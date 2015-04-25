@@ -58,12 +58,12 @@ class MMCHostAdmin(admin.ModelAdmin):
 
 class MMCScriptAdmin(MMCHostAdmin):
     list_display = (
-        'name', 'calls', 'ignore', 'one_copy',
-        'save_on_error', 'created', 'id')
-    list_filter = ('ignore', 'one_copy', 'save_on_error')
+        'name', 'calls', 'ignore', 'one_copy', 'save_on_error',
+        'real_time', 'created', 'id')
+    list_filter = ('ignore', 'one_copy', 'save_on_error', 'real_time')
     fieldsets = [
         ('Basic', {'fields': [
-            'ignore', 'one_copy', 'save_on_error'
+            'ignore', 'one_copy', 'save_on_error', 'real_time'
         ]}),
         ('Triggers', {'fields': [
             'enable_triggers', 'trigger_time', 'trigger_memory', 'trigger_cpu'
