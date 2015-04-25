@@ -69,7 +69,8 @@ class MMCScriptAdmin(MMCHostAdmin):
             'real_time', 'enable_queries'
         ]}),
         ('Triggers', {'fields': [
-            'enable_triggers', 'trigger_time', 'trigger_memory', 'trigger_cpu'
+            'enable_triggers', 'trigger_time', 'trigger_memory',
+            'trigger_cpu', 'trigger_queries'
         ]}),
     ]
 

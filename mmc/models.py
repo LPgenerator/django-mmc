@@ -48,7 +48,11 @@ class MMCScript(models.Model):
     trigger_memory = models.FloatField(
         null=True, blank=True, help_text='Set the threshold MB for Memory')
     trigger_time = models.FloatField(
-        null=True, blank=True, help_text='Set the threshold sec for execution')
+        null=True, blank=True,
+        help_text='Set the threshold sec for execution time')
+    trigger_queries = models.FloatField(
+        null=True, blank=True,
+        help_text='Set the threshold number of queries')
     enable_triggers = models.BooleanField(
         default=False, help_text='Enable triggers for receive email '
                                  'notification, if threshold of counters '

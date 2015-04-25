@@ -295,6 +295,8 @@ class BaseCommandMixin(object):
                 reason.append(('memory', cls.memory, script.trigger_memory))
             if script.trigger_time and cls.elapsed > script.trigger_time:
                 reason.append(('time', cls.elapsed, script.trigger_time))
+            if script.trigger_queries and cls.queries > script.trigger_queries:
+                reason.append(('queries', cls.queries, script.trigger_queries))
 
             if reason:
                 for data in reason:
