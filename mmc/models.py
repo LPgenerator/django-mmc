@@ -85,6 +85,7 @@ class MMCLog(models.Model):
     was_notified = models.BooleanField(default=False)
     stdout_messages = models.TextField(blank=True, null=True)
     pid = models.IntegerField(default=1)
+    queries = models.BigIntegerField(default=0)
 
     def __str__(self):
         return self.script.name

@@ -19,6 +19,8 @@ from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
 from django.utils.encoding import smart_str
 from django.db.utils import DatabaseError
+from django.db import connections
+from django.conf import settings
 
 try:
     from django.utils.encoding import force_unicode
@@ -190,6 +192,11 @@ class BaseCommandMixin(object):
         except Exception as err:
             print("[MMC] Logging broken with message: {0}".format(err))
 
+    def __mmc_get_queries(self, queries=0):
+        for db in settings.DATABASES.keys():
+            queries += len(connections[db].queries)
+        return queries
+
     def __mmc_store_log(self):
         try:
             from mmc.models import MMCLog
@@ -215,6 +222,7 @@ class BaseCommandMixin(object):
                 cpu_time="%0.2f" % (utime + stime),
                 stdout_messages=self.__mmc_get_stdout(),
                 pid=os.getpid(),
+                queries=self.__mmc_get_queries(),
             )
         except Exception as err:
             print("[MMC] Logging broken with message: {0}".format(err))

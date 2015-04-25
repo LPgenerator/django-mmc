@@ -7,16 +7,17 @@ from mmc.models import MMCLog, MMCScript, MMCHost, MMCEmail
 class MMCLogAdmin(admin.ModelAdmin):
     list_display = (
         'script', 'hostname', 'success', 'elapsed',
-        'memory', 'cpu_time', 'start', 'end')
+        'memory', 'cpu_time', 'queries', 'start', 'end')
     list_filter = ('success', 'hostname', 'script', 'created',)
     list_display_links = ('script',)
 
     readonly_fields = (
-        'start', 'end', 'elapsed', 'hostname', 'script',
+        'start', 'end', 'elapsed', 'hostname', 'script', 'queries',
         'sys_argv', 'success', 'error_message', 'memory', 'cpu_time')
     fields = (
-        'start', 'end', 'elapsed', 'hostname', 'script', 'memory', 'cpu_time',
-        'sys_argv', 'success', 'error_message', 'traceback', 'stdout_messages')
+        'start', 'end', 'elapsed', 'hostname', 'script', 'memory',
+        'cpu_time', 'queries', 'sys_argv', 'success', 'error_message',
+        'traceback', 'stdout_messages')
 
     date_hierarchy = 'created'
     ordering = ('-id',)
