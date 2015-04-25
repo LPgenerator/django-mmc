@@ -30,7 +30,7 @@ class MMCScript(models.Model):
         default=False, help_text='Only one copy of this script will be run.')
     save_on_error = models.BooleanField(
         default=False, help_text='This flag used only for ignored commands.')
-
+    calls = models.BigIntegerField('Number of calls', default=0)
     trigger_cpu = models.FloatField(
         null=True, blank=True, help_text='Set the threshold time for CPU')
     trigger_memory = models.FloatField(
@@ -41,6 +41,10 @@ class MMCScript(models.Model):
         default=False, help_text='Enable triggers for receive email '
                                  'notification, if threshold of counters '
                                  'will be exceeded')
+
+    def update_calls(self):
+        MMCScript.objects.filter(pk=self.pk).update(
+            calls=models.F('calls') + 1)
 
     @classmethod
     def get_one_copy(cls, name):
@@ -87,10 +91,10 @@ class MMCLog(models.Model):
         instance = kwargs.pop('instance', None)
 
         def do_save():
-            if instance:
+            if instance is not None:
                 return cls.objects.filter(pk=instance.pk).update(**kwargs)
-            else:
-                return cls.objects.create(**kwargs)
+            kwargs.get('script').update_calls()
+            return cls.objects.create(**kwargs)
 
         if not kwargs['script'].ignore and not kwargs['hostname'].ignore:
             return do_save()
