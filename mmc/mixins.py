@@ -147,10 +147,7 @@ class BaseCommandMixin(object):
             self._mmc_success = True
         except Exception as err:
             self._mmc_success = False
-            if PY2 is True:
-                self._mmc_error_message = err.__unicode__()
-            else:
-                self._mmc_error_message = err.__str__()
+            self._mmc_error_message = err
             self._mmc_traceback = traceback.format_exc()
             self._mmc_exc_info = sys.exc_info()
             if not mmc_is_test():
@@ -262,9 +259,9 @@ class BaseCommandMixin(object):
             if self._mmc_show_traceback:
                 print(self._mmc_traceback)
             else:
-                sys.stderr.write(smart_str(
-                    'Error: %s\n' % self.style.ERROR(self._mmc_error_message)
-                ))
+                sys.stderr.write("\n")
+                sys.stderr.write(smart_str(self._mmc_error_message))
+                sys.stderr.write("\n")
 
     def __mmc_notification(self):
         from mmc.models import MMCEmail, MMCLog

@@ -35,7 +35,8 @@ class MMCScript(models.Model):
     one_copy = models.BooleanField(
         default=False, help_text='Only one copy of this script will be run.')
     save_on_error = models.BooleanField(
-        default=False, help_text='This flag used only for ignored commands.')
+        default=False,
+        help_text='This flag can be used only for ignored commands.')
     real_time = models.BooleanField(
         default=False,
         help_text='Real Time info about command (for long tasks).')
