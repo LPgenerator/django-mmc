@@ -7,7 +7,7 @@ from mmc.models import MMCLog, MMCScript, MMCHost, MMCEmail
 class MMCLogAdmin(admin.ModelAdmin):
     list_display = (
         'script', 'hostname', 'success', 'elapsed',
-        'memory', 'cpu_time', 'queries', 'start', 'end')
+        'memory', 'cpu_time', 'start', 'end')
     list_filter = ('success', 'hostname', 'script', 'created',)
     list_display_links = ('script',)
 
@@ -60,11 +60,13 @@ class MMCHostAdmin(admin.ModelAdmin):
 class MMCScriptAdmin(MMCHostAdmin):
     list_display = (
         'name', 'calls', 'ignore', 'one_copy', 'save_on_error',
-        'real_time', 'created', 'id')
-    list_filter = ('ignore', 'one_copy', 'save_on_error', 'real_time')
+        'real_time', 'enable_queries', 'created', 'id')
+    list_filter = (
+        'ignore', 'one_copy', 'save_on_error', 'real_time', 'enable_queries')
     fieldsets = [
         ('Basic', {'fields': [
-            'ignore', 'one_copy', 'save_on_error', 'real_time'
+            'ignore', 'one_copy', 'save_on_error',
+            'real_time', 'enable_queries'
         ]}),
         ('Triggers', {'fields': [
             'enable_triggers', 'trigger_time', 'trigger_memory', 'trigger_cpu'

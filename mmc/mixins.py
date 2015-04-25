@@ -19,7 +19,7 @@ from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
 from django.utils.encoding import smart_str
 from django.db.utils import DatabaseError
-from django.db import connections
+from django.db import connections, connection
 
 try:
     from django.utils.encoding import force_unicode
@@ -142,6 +142,11 @@ class BaseCommandMixin(object):
         else:
             super(BaseCommandMixin, self).execute(*args, **options)
 
+    def __mmc_enable_queries(self):
+        if self._mmc_log_instance:
+            if self._mmc_log_instance.script.enable_queries:
+                connection.use_debug_cursor = True
+
     def __mmc_execute(self, *args, **options):
         try:
             self.__mmc_run(*args, **options)
@@ -162,6 +167,7 @@ class BaseCommandMixin(object):
         self.__mmc_init(**options)
         self.__mmc_log_start()
         self.__mmc_run_monitor()
+        self.__mmc_enable_queries()
         self.__mmc_execute(*args, **options)
         self.__mmc_done()
 

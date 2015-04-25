@@ -41,6 +41,8 @@ class MMCScript(models.Model):
         default=False,
         help_text='Real Time info about command (for long tasks).')
     calls = models.BigIntegerField('Number of calls', default=0)
+    enable_queries = models.BooleanField(
+        default=False, help_text='Profile queries numbers.')
     trigger_cpu = models.FloatField(
         null=True, blank=True, help_text='Set the threshold time for CPU')
     trigger_memory = models.FloatField(
