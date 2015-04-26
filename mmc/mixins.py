@@ -4,7 +4,6 @@ __all__ = ['BaseCommand', 'NoArgsCommand', 'inject_management']
 
 import traceback
 import resource
-import socket
 import atexit
 import time
 import sys
@@ -35,7 +34,7 @@ except ImportError:
 
 from mmc.defaults import (
     SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT,
-    SUBJECT_LIMIT, REAL_TIME_UPDATE
+    SUBJECT_LIMIT, REAL_TIME_UPDATE, HOSTNAME
 )
 from mmc.lock import get_lock_instance
 from mmc.utils import monkey_mix
@@ -44,6 +43,11 @@ from mmc import PY2
 
 def mmc_is_test():
     return sys.argv[1:3] == ['test', 'mmc']
+
+
+def stderr(msg):
+    sys.stderr.write(msg)
+    sys.stderr.write("\n")
 
 
 class StdOut(object):
@@ -91,7 +95,7 @@ class BaseCommandMixin(object):
         self._mmc_script = self.__module__.split('.')[-1]
         self._mmc_lock = get_lock_instance(self._mmc_script)
         self._mmc_exc_info = None
-        self._mmc_hostname = socket.gethostname()
+        self._mmc_hostname = HOSTNAME
         self._mmc_log_instance = None
         self._mmc_resources = resource.getrusage(resource.RUSAGE_SELF)
         self._mmc_mon_is_run = None
@@ -108,7 +112,7 @@ class BaseCommandMixin(object):
             except MMCScript.DoesNotExist:
                 pass
         except Exception as err:
-            print("[MMC] {0}".format(err))
+            stderr("[MMC] {0}".format(err))
 
     def __mmc_monitor(self):
         while self._mmc_mon_is_run is True:
@@ -196,7 +200,7 @@ class BaseCommandMixin(object):
         except DatabaseError:
             pass
         except Exception as err:
-            print("[MMC] Logging broken with message: {0}".format(err))
+            stderr("[MMC] Logging broken with message: {0}".format(err))
 
     def __mmc_get_queries(self, queries=0):
         for db in connections.all():
@@ -231,7 +235,7 @@ class BaseCommandMixin(object):
                 queries=self.__mmc_get_queries(),
             )
         except Exception as err:
-            print("[MMC] Logging broken with message: {0}".format(err))
+            stderr("[MMC] Logging broken with message: {0}".format(err))
 
     def __mmc_get_stdout(self):
         if hasattr(sys.stdout, 'get_stdout'):
@@ -273,9 +277,7 @@ class BaseCommandMixin(object):
             if self._mmc_show_traceback:
                 print(self._mmc_traceback)
             else:
-                sys.stderr.write("\n")
-                sys.stderr.write(smart_str(self._mmc_error_message))
-                sys.stderr.write("\n")
+                stderr(smart_str(self._mmc_error_message))
 
     def __mmc_notification(self):
         from mmc.models import MMCEmail, MMCLog
