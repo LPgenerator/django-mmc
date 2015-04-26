@@ -8,7 +8,7 @@ class MMCLogAdmin(admin.ModelAdmin):
     list_display = (
         'script', 'hostname', 'success', 'elapsed',
         'memory', 'cpu_time', 'start', 'end')
-    list_filter = ('success', 'hostname', 'script', 'created',)
+    list_filter = ('success', 'script', 'hostname', 'created',)
     list_display_links = ('script',)
 
     readonly_fields = (

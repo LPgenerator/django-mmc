@@ -2,6 +2,7 @@
 
 __author__ = 'gotlium'
 
+from socket import gethostname
 from django.conf import settings
 
 
@@ -31,3 +32,4 @@ READ_STDOUT = get_settings('MMC_READ_STDOUT', False)
 MAIL_MODULE = get_settings('MMC_MAIL_MODULE', 'django.core.mail')
 EMAIL_FROM = get_settings('MMC_EMAIL_FROM', settings.DEFAULT_FROM_EMAIL)
 REAL_TIME_UPDATE = get_settings('MMC_REAL_TIME_UPDATE', 3)
+HOSTNAME = get_settings('MMC_HOSTNAME', gethostname())
