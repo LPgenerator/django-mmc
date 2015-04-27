@@ -6,7 +6,7 @@ setup(
     name='django-mmc',
     version=get_version(),
     description='App for monitoring management commands on Django.',
-    keywords="django management commands",
+    keywords="django management commands monitoring",
     long_description=open('README.rst').read(),
     author="GoTLiuM InSPiRiT",
     author_email='gotlium@gmail.com',

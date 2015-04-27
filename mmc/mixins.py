@@ -16,9 +16,9 @@ except ImportError:
 
 from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
 from django.core.management.base import BaseCommand as BaseCommandOrigin
+from django.db import connections, connection
 from django.utils.encoding import smart_str
 from django.db.utils import DatabaseError
-from django.db import connections, connection
 
 try:
     from django.utils.encoding import force_unicode
