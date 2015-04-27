@@ -155,7 +155,7 @@ class BaseCommandMixin(object):
         try:
             self.__mmc_run(*args, **options)
             self._mmc_success = True
-        except Exception as err:
+        except (Exception, KeyboardInterrupt) as err:
             self._mmc_success = False
             self._mmc_error_message = err
             self._mmc_traceback = traceback.format_exc()
