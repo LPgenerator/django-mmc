@@ -17,8 +17,8 @@ class Command(BaseCommand):
             import psutil
 
             if psutil.pid_exists(pid):
-                p = psutil.Process(pid)
-                if proc_name in p.cmdline():
+                process = psutil.Process(pid)
+                if proc_name in process.cmdline():
                     return True
         except ImportError:
             pass

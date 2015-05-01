@@ -8,3 +8,4 @@ autodetect: yes
 ignore-paths:
     - dbmail/migrations
     - dbmail/south_migrations
+    - demo

@@ -28,13 +28,13 @@ class AbstractLock(object):
         return os.path.join(self._tempdir, self._script + '.lock')
 
     def unlock(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def lock(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def is_run(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def check_is_running(self):
         if self.is_run():
