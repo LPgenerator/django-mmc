@@ -4,6 +4,9 @@ Django-mmc
 .. image:: https://api.travis-ci.org/LPgenerator/django-mmc.png?branch=master
     :alt: Build Status
     :target: https://travis-ci.org/LPgenerator/django-mmc
+.. image:: https://landscape.io/github/LPgenerator/django-mmc/master/landscape.svg
+   :target: https://landscape.io/github/LPgenerator/django-mmc/master
+   :alt: Code Health
 .. image:: https://img.shields.io/badge/python-2.6,2.7,3.4,pypy,pypy3-blue.svg
     :alt: Python 2.6, 2.7, 3.4
     :target: https://pypi.python.org/pypi/django-mmc/
