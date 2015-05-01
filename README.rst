@@ -1,24 +1,19 @@
 Django-mmc
 ==========
 
-
-
-.. image:: https://img.shields.io/badge/python-2.6,2.7,3.4,pypy,pypy3-blue.svg?style=flat-square
-    :alt: Python 2.6, 2.7, 3.4
-    :target: https://pypi.python.org/pypi/django-mmc/
 .. image:: https://api.travis-ci.org/LPgenerator/django-mmc.png?branch=master
     :alt: Build Status
     :target: https://travis-ci.org/LPgenerator/django-mmc
-.. image:: https://pypip.in/v/django-mmc/badge.png
+.. image:: https://img.shields.io/badge/python-2.6,2.7,3.4,pypy,pypy3-blue.svg
+    :alt: Python 2.6, 2.7, 3.4
+    :target: https://pypi.python.org/pypi/django-mmc/
+.. image:: https://img.shields.io/pypi/v/django-mmc.svg
     :alt: Current version on PyPi
     :target: https://crate.io/packages/django-mmc/
-.. image:: https://pypip.in/d/django-mmc/badge.png
+.. image:: https://img.shields.io/pypi/dm/django-mmc.svg
     :alt: Downloads from PyPi
     :target: https://crate.io/packages/django-mmc/
-.. image:: https://pypip.in/wheel/django-mmc/badge.png
-    :target: https://pypi.python.org/pypi/django-mmc/
-    :alt: Wheel
-.. image:: https://pypip.in/license/django-mmc/badge.png
+.. image:: https://img.shields.io/badge/license-GPLv2-green.svg
     :target: https://pypi.python.org/pypi/django-mmc/
     :alt: License
 
