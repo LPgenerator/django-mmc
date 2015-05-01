@@ -48,8 +48,32 @@ Quick installation
 5. Enjoy
 
 
-Local demo installation
------------------------
+Demo installation
+-----------------
+
+**Docker**
+
+.. code-block:: bash
+
+    $ git clone --depth 1 https://github.com/LPgenerator/django-mmc.git mmc
+    $ cd mmc
+    $ docker build -t mmc .
+    $ docker run -it -d -p 8000:8000 --name mmc mmc
+    $ docker exec -i -t mmc /bin/bash
+    $ cd /mmc_demo/
+
+**Vagrant**
+
+.. code-block:: bash
+
+    $ git clone --depth 1 https://github.com/LPgenerator/django-mmc.git mmc
+    $ cd mmc
+    $ vagrant up
+    $ vagrant ssh
+    $ cd /mmc_demo/
+
+
+**OS X/Linux**
 
 .. code-block:: bash
 

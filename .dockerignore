@@ -1,0 +1,7 @@
+.vagrant
+.tox
+django_mmc.egg-info
+.coverage
+screenshots
+.idea
+.git
