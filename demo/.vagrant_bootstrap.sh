@@ -7,6 +7,8 @@ apt-get clean
 cd /mmc_demo/
 pip install -r requirements.txt
 
+if [ -f "demo/db.sqlite" ]; then rm ./demo/db.sqlite; fi
+
 python manage.py syncdb --noinput
 python manage.py migrate --noinput
 python manage.py loaddata auth.json

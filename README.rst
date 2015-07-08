@@ -95,7 +95,15 @@ Demo installation
     $ python manage.py test_command_error >& /dev/null
     $ python manage.py test_command_killed >& /dev/null
     $ python manage.py runserver >& /dev/null &
+
+
+
+Open app in browser (login and password is admin/admin):
+
+.. code-block:: bash
+
     $ xdg-open http://127.0.0.1:8000/admin/mmc/mmclog/ >& /dev/null || open http://127.0.0.1:8000/admin/mmc/mmclog/ >& /dev/null
+
 
 Configuration
 -------------
