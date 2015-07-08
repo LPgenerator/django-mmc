@@ -16,4 +16,4 @@ python manage.py test_command_noargs >& /dev/null &
 python manage.py test_command_error >& /dev/null &
 python manage.py test_command_killed >& /dev/null &
 
-python manage.py runserver 0.0.0.0:8000 >& /dev/null &
+nohup python manage.py runserver 0.0.0.0:8000 >& /dev/null &
