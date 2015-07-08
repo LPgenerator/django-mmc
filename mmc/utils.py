@@ -13,15 +13,10 @@ class MonkeyProxy(object):
                 setattr(self, name, value)
 
 
-def monkey_mix(cls, mixin, methods=None):
-    assert '_no_monkey' not in cls.__dict__, 'Multi monkey mix not supported'
+def monkey_mix(cls, mixin):
     cls._no_monkey = MonkeyProxy(cls)
-
-    if methods is None:
-        isboundmethod = inspect.isfunction if mmc.PY3 else inspect.ismethod
-        methods = inspect.getmembers(mixin, isboundmethod)
-    else:
-        methods = [(m, getattr(mixin, m)) for m in methods]
+    is_bound_method = inspect.isfunction if mmc.PY3 else inspect.ismethod
+    methods = inspect.getmembers(mixin, is_bound_method)
 
     for name, method in methods:
         if hasattr(cls, name):

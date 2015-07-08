@@ -58,7 +58,7 @@ Demo installation
 
 .. code-block:: bash
 
-    $ git clone --depth 1 https://github.com/LPgenerator/django-mmc.git mmc
+    $ git clone --depth 1 -b master https://github.com/LPgenerator/django-mmc.git mmc
     $ cd mmc
     $ docker build -t mmc .
     $ docker run -it -d -p 8000:8000 --name mmc mmc
@@ -69,9 +69,9 @@ Demo installation
 
 .. code-block:: bash
 
-    $ git clone --depth 1 https://github.com/LPgenerator/django-mmc.git mmc
+    $ git clone --depth 1 -b master https://github.com/LPgenerator/django-mmc.git mmc
     $ cd mmc
-    $ vagrant up
+    $ vagrant up --provider virtualbox
     $ vagrant ssh
     $ cd /mmc_demo/
 

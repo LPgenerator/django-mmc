@@ -101,6 +101,20 @@ class BaseCommandMixin(object):
         self._mmc_mon_is_run = None
         self._mmc_mon_is_ok = False
 
+    def run_at_subprocess(self, use_subprocess, foo, *args, **kwrags):
+        """
+        This method for run some function at subprocess.
+        Very useful when you have a problem with memory leaks.
+        """
+        if use_subprocess is False:
+            return foo(*args, **kwrags)
+
+        child_pid = os.fork()
+        if child_pid == 0:
+            foo(*args, **kwrags)
+            sys.exit(0)
+        return os.waitpid(child_pid, 0)[1] == 0
+
     def __mmc_one_copy(self):
         try:
             from mmc.models import MMCScript
