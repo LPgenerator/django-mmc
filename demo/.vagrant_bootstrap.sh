@@ -2,7 +2,6 @@
 
 apt-get update
 apt-get install -y git python python-dev python-pip
-apt-get clean
 
 cd /mmc_demo/
 pip install -r requirements.txt
