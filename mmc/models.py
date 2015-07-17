@@ -1,5 +1,6 @@
 __author__ = 'gotlium'
 
+from django.utils import timezone
 from django.db import models
 try:
     from django.utils.importlib import import_module
@@ -41,6 +42,9 @@ class MMCScript(models.Model):
     real_time = models.BooleanField(
         default=False,
         help_text='Real Time info about command (for long tasks).')
+    interval_restriction = models.PositiveIntegerField(
+        default=None, null=True, blank=True,
+        help_text='Interval before script can be run again')
     calls = models.BigIntegerField('Number of calls', default=0)
     enable_queries = models.BooleanField(
         default=False, help_text='Profile queries numbers.')
@@ -66,6 +70,20 @@ class MMCScript(models.Model):
     @classmethod
     def get_one_copy(cls, name):
         return cls.objects.get(name=name).one_copy
+
+    @classmethod
+    def run_is_allowed(cls, name):
+        script = cls.objects.get(name=name)
+        interval_restriction = script.interval_restriction
+
+        if not interval_restriction:
+            return True
+
+        logs = MMCLog.objects.filter(script=script).order_by('-id')[:1]
+        if logs.exists():
+            if (timezone.now() - logs[0].end).seconds < interval_restriction:
+                return False
+        return True
 
     class Meta:
         verbose_name = 'Script'

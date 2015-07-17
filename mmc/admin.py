@@ -66,7 +66,7 @@ class MMCScriptAdmin(MMCHostAdmin):
     fieldsets = [
         ('Basic', {'fields': [
             'ignore', 'one_copy', 'save_on_error',
-            'real_time', 'enable_queries'
+            'real_time', 'enable_queries', 'interval_restriction'
         ]}),
         ('Triggers', {'fields': [
             'enable_triggers', 'trigger_time', 'trigger_memory',

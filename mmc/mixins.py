@@ -115,6 +115,19 @@ class BaseCommandMixin(object):
             sys.exit(0)
         return os.waitpid(child_pid, 0)[1] == 0
 
+    def __mmc_run_is_allowed(self):
+        try:
+            from mmc.models import MMCScript
+
+            try:
+                if not MMCScript.run_is_allowed(self._mmc_script):
+                    sys.stdout.write("Can't be run. Interval restriction\n")
+                    sys.exit(-1)
+            except MMCScript.DoesNotExist:
+                pass
+        except Exception as err:
+            stderr("[MMC] {0}".format(err))
+
     def __mmc_one_copy(self):
         try:
             from mmc.models import MMCScript
@@ -150,6 +163,7 @@ class BaseCommandMixin(object):
 
     def __mmc_init(self, **options):
         if not mmc_is_test():
+            self.__mmc_run_is_allowed()
             self.__mmc_one_copy()
             atexit.register(self._mmc_at_exit_callback)
             self._mmc_show_traceback = options.get('traceback', False)
