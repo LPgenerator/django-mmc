@@ -6,7 +6,7 @@ try:
 except ImportError:
     from importlib import import_module
 
-from mmc.defaults import SUBJECT, MAIL_MODULE, EMAIL_FROM
+from mmc.defaults import SUBJECT, MAIL_MODULE, EMAIL_FROM, DEFAULT_ONE_COPY
 from mmc import python_2_unicode_compatible
 
 
@@ -33,7 +33,8 @@ class MMCScript(models.Model):
     ignore = models.BooleanField(
         default=False, help_text='All logs from this script will be ignored.')
     one_copy = models.BooleanField(
-        default=False, help_text='Only one copy of this script will be run.')
+        default=DEFAULT_ONE_COPY,
+        help_text='Only one copy of this script will be run.')
     save_on_error = models.BooleanField(
         default=False,
         help_text='This flag can be used only for ignored commands.')
