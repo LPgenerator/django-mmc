@@ -81,7 +81,7 @@ class MMCScript(models.Model):
 
         logs = MMCLog.objects.filter(script=script).order_by('-id')[:1]
         if logs.exists():
-            if (timezone.now() - logs[0].end).seconds < interval_restriction:
+            if (timezone.now() - logs[0].start).seconds < interval_restriction:
                 return False
         return True
 
