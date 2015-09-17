@@ -15,8 +15,8 @@ script:
 env:
   - DJANGO=1.5.12
   - DJANGO=1.6.11
-  - DJANGO=1.7.7
-  - DJANGO=1.8
+  - DJANGO=1.7.10
+  - DJANGO=1.8.4
 branches:
   only:
     - master

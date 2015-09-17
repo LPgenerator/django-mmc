@@ -7,7 +7,7 @@ Django-mmc
 .. image:: https://landscape.io/github/LPgenerator/django-mmc/master/landscape.svg
    :target: https://landscape.io/github/LPgenerator/django-mmc/master
    :alt: Code Health
-.. image:: https://img.shields.io/badge/python-2.6,2.7,3.4,pypy,pypy3-blue.svg
+.. image:: https://img.shields.io/badge/python-2.6,2.7,3.4,3.5,pypy,pypy3-blue.svg
     :alt: Python 2.6, 2.7, 3.4
     :target: https://pypi.python.org/pypi/django-mmc/
 .. image:: https://img.shields.io/pypi/v/django-mmc.svg
@@ -213,5 +213,5 @@ Screenshots
 
 Compatibility:
 -------------
-* Python: 2.6, 2.7, 3.4, pypy, pypy3
+* Python: 2.6, 2.7, 3.4, 3.5, pypy, pypy3
 * Django: 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9
