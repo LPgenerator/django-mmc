@@ -7,9 +7,10 @@ from mmc.models import MMCLog, MMCScript, MMCHost, MMCEmail
 class MMCLogAdmin(admin.ModelAdmin):
     list_display = (
         'script', 'hostname', 'success', 'elapsed',
-        'memory', 'cpu_time', 'start', 'end')
-    list_filter = ('success', 'script', 'hostname', 'created',)
+        'memory', 'cpu_time', 'start', 'end', 'is_fixed')
+    list_filter = ('success', 'is_fixed', 'script', 'hostname', 'created',)
     list_display_links = ('script',)
+    list_editable = ['is_fixed']
 
     readonly_fields = (
         'start', 'end', 'elapsed', 'hostname', 'script', 'queries',

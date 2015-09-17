@@ -111,6 +111,7 @@ class MMCLog(models.Model):
     stdout_messages = models.TextField(blank=True, null=True)
     pid = models.IntegerField(default=1)
     queries = models.BigIntegerField(default=0)
+    is_fixed = models.NullBooleanField(default=None)
 
     def __str__(self):
         return self.script.name

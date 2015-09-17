@@ -261,6 +261,7 @@ class BaseCommandMixin(object):
                 stdout_messages=self.__mmc_get_stdout(),
                 pid=os.getpid(),
                 queries=self.__mmc_get_queries(),
+                is_fixed=False if self._mmc_success is False else None
             )
         except Exception as err:
             stderr("[MMC] Logging broken with message: {0}".format(err))
