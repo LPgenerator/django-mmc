@@ -62,6 +62,8 @@ class MMCScript(models.Model):
         default=False, help_text='Enable triggers for receive email '
                                  'notification, if threshold of counters '
                                  'will be exceeded')
+    temporarily_disabled = models.BooleanField(
+        default=False, help_text='Temporarily disable script execution')
 
     def update_calls(self):
         MMCScript.objects.filter(pk=self.pk).update(
@@ -84,6 +86,12 @@ class MMCScript(models.Model):
             if (timezone.now() - logs[0].start).seconds < interval_restriction:
                 return False
         return True
+
+    @classmethod
+    def run_is_enabled(cls, name):
+        script = cls.objects.get(name=name)
+
+        return not script.temporarily_disabled
 
     class Meta:
         verbose_name = 'Script'

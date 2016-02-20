@@ -61,17 +61,19 @@ class MMCHostAdmin(admin.ModelAdmin):
 class MMCScriptAdmin(MMCHostAdmin):
     list_display = (
         'name', 'calls', 'ignore', 'one_copy', 'save_on_error',
-        'real_time', 'enable_queries', 'created', 'id')
+        'real_time', 'enable_queries', 'temporarily_disabled', 'created', 'id')
     list_filter = (
-        'ignore', 'one_copy', 'save_on_error', 'real_time', 'enable_queries')
+        'temporarily_disabled', 'ignore', 'one_copy',
+        'save_on_error', 'real_time', 'enable_queries',)
+    # list_editable = list_filter
     fieldsets = [
         ('Basic', {'fields': [
-            'ignore', 'one_copy', 'save_on_error',
-            'real_time', 'enable_queries', 'interval_restriction'
+            'temporarily_disabled', 'ignore', 'one_copy', 'save_on_error',
+            'real_time', 'enable_queries', 'interval_restriction',
         ]}),
         ('Triggers', {'fields': [
             'enable_triggers', 'trigger_time', 'trigger_memory',
-            'trigger_cpu', 'trigger_queries'
+            'trigger_cpu', 'trigger_queries',
         ]}),
     ]
 
