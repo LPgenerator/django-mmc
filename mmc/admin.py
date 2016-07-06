@@ -25,9 +25,9 @@ class MMCLogAdmin(admin.ModelAdmin):
 
     search_fields = (
         'error_message',
-        'traceback'
-        'hostname',
-        'script',
+        'traceback',
+        'hostname__name',
+        'script__name',
     )
 
     def has_add_permission(self, request):
