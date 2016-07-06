@@ -161,7 +161,7 @@ class MMCEmail(models.Model):
     email = models.EmailField(
         help_text='Email will be used for send all exceptions from command.')
     ignore = models.ManyToManyField(
-        MMCScript, blank=True, null=True,
+        MMCScript, blank=True,
         help_text='Helpful for different teams. '
                   'Choose script which you want to ignore.')
     is_active = models.BooleanField(
