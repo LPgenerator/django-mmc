@@ -2,7 +2,6 @@ __author__ = 'gotlium'
 
 __all__ = ['BaseCommand', 'NoArgsCommand', 'inject_management']
 
-import datetime
 import traceback
 import resource
 import atexit
@@ -277,7 +276,7 @@ class BaseCommandMixin(object):
                 pid=os.getpid(),
                 queries=self.__mmc_get_queries(),
                 is_fixed=False if self._mmc_success is False else None,
-                end=datetime.datetime.now() if final else self._mmc_log_instance.end
+                end=now() if final else self._mmc_log_instance.end
             )
         except Exception as err:
             stderr("[MMC] Logging broken with message: {0}".format(err))
