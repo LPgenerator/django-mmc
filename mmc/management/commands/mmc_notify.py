@@ -6,6 +6,7 @@ import datetime
 
 from django.core.management.base import BaseCommand
 from django.utils.timezone import now
+from django.conf import settings
 
 from mmc.models import MMCLog, MMCEmail
 
@@ -30,7 +31,7 @@ class Command(BaseCommand):
             success__isnull=True, was_notified=False,
             created__range=[two_day_ago, day_ago])
 
-        for log in log_list:
+        for i, log in enumerate(log_list):
             if self.check_pid(log.pid, log.script.name):
                 continue
             MMCEmail.send(
@@ -38,3 +39,6 @@ class Command(BaseCommand):
                 'Maybe script "%s" was killed by OS kernel.' % log.script.name)
             log.was_notified = True
             log.save()
+
+            if i >= settings.NOTIFICATION_LIMIT:
+                break
