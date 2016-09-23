@@ -1,7 +1,10 @@
 __author__ = 'gotlium'
 
 import time
-from django.core.management.base import NoArgsCommand
+try:
+    from django.core.management.base import NoArgsCommand
+except ImportError:
+    from django.core.management import BaseCommand as NoArgsCommand
 
 
 class Command(NoArgsCommand):
