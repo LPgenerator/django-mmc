@@ -161,6 +161,17 @@ class BaseCommandMixin(object):
         except Exception as err:
             stderr("[MMC] {0}".format(err))
 
+    def __mmc_track_at_exit(self):
+        try:
+            from mmc.models import MMCScript
+
+            try:
+                return MMCScript.get_track_at_exit(self._mmc_script)
+            except MMCScript.DoesNotExist:
+                return True
+        except Exception as err:
+            stderr("[MMC] {0}".format(err))
+
     def __mmc_monitor(self):
         while self._mmc_mon_is_run is True:
             self.__mmc_store_log()
@@ -186,7 +197,8 @@ class BaseCommandMixin(object):
             self.__mmc_run_is_allowed()
             self.__mmc_is_enabled()
             self.__mmc_one_copy()
-            atexit.register(self._mmc_at_exit_callback)
+            if self.__mmc_track_at_exit():
+                atexit.register(self._mmc_at_exit_callback)
             self._mmc_show_traceback = options.get('traceback', False)
 
     def __mmc_run(self, *args, **options):
@@ -213,7 +225,7 @@ class BaseCommandMixin(object):
                 raise
 
     def __mmc_done(self):
-        if mmc_is_test():
+        if mmc_is_test() or not self.__mmc_track_at_exit():
             self._mmc_at_exit_callback()
 
     def execute(self, *args, **options):

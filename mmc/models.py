@@ -70,6 +70,8 @@ class MMCScript(models.Model):
         default=False, help_text='Temporarily disable script execution')
     last_call = models.DateTimeField(auto_now=True)
     max_elapsed = models.FloatField(default=0.0)
+    track_at_exit = models.BooleanField(
+        default=True, help_text='Disable for uWSGI/Celery')
 
     def update_calls(self):
         MMCScript.objects.filter(pk=self.pk).update(
@@ -85,6 +87,10 @@ class MMCScript(models.Model):
     @classmethod
     def get_one_copy(cls, name):
         return cls.objects.get(name=name).one_copy
+
+    @classmethod
+    def get_track_at_exit(cls, name):
+        return cls.objects.get(name=name).track_at_exit
 
     @classmethod
     def run_is_allowed(cls, name):

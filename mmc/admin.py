@@ -66,12 +66,13 @@ class MMCScriptAdmin(MMCHostAdmin):
     list_filter = (
         'temporarily_disabled', 'ignore', 'one_copy',
         'save_on_error', 'real_time', 'enable_queries',
-        'enable_triggers',)
+        'enable_triggers', 'track_at_exit',)
     # list_editable = list_filter
     fieldsets = [
         ('Basic', {'fields': [
             'temporarily_disabled', 'ignore', 'one_copy', 'save_on_error',
-            'real_time', 'enable_queries', 'interval_restriction',
+            'real_time', 'enable_queries', 'track_at_exit',
+            'interval_restriction',
         ]}),
         ('Triggers', {'fields': [
             'enable_triggers', 'trigger_time', 'trigger_memory',
