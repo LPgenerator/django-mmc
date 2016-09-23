@@ -14,7 +14,14 @@ try:
 except ImportError:
     import _thread as thread
 
-from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
+
+try:
+    from django.core.management.base import (
+        NoArgsCommand as NoArgsCommandOrigin
+    )
+except ImportError:
+    from django.core.management import BaseCommand as NoArgsCommandOrigin
+
 from django.core.management.base import BaseCommand as BaseCommandOrigin
 from django.db import connections, connection
 from django.utils.encoding import smart_str
