@@ -68,10 +68,19 @@ class MMCScript(models.Model):
                                  'will be exceeded')
     temporarily_disabled = models.BooleanField(
         default=False, help_text='Temporarily disable script execution')
+    last_call = models.DateTimeField(auto_now=True)
+    max_elapsed = models.FloatField(default=0.0)
 
     def update_calls(self):
         MMCScript.objects.filter(pk=self.pk).update(
             calls=models.F('calls') + 1)
+
+    def update_meta(self, max_elapsed=0):
+        MMCScript.objects.filter(pk=self.pk).update(
+            last_call=timezone.now())
+        if max_elapsed > self.max_elapsed:
+            MMCScript.objects.filter(pk=self.pk).update(
+                max_elapsed=max_elapsed)
 
     @classmethod
     def get_one_copy(cls, name):

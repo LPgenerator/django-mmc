@@ -93,6 +93,7 @@ class BaseCommandMixin(object):
 
         self._mmc_start_date = now()
         self._mmc_start_time = time.time()
+        self._mmc_elapsed_time = None
         self._mmc_elapsed = None
         self._mmc_success = None
         self._mmc_error_message = None
@@ -265,13 +266,14 @@ class BaseCommandMixin(object):
             utime = resources.ru_utime - self._mmc_resources.ru_utime
             stime = resources.ru_stime - self._mmc_resources.ru_stime
             div = 1024.0 if 'linux' in sys.platform else 1048576.0
+            self._mmc_elapsed_time = time.time() - self._mmc_start_time
 
             MMCLog.logging(
                 instance=self._mmc_log_instance,
                 start=self._mmc_start_date,
                 hostname=self._mmc_hostname,
                 script=self._mmc_script,
-                elapsed="%0.2f" % (time.time() - self._mmc_start_time),
+                elapsed="%0.2f" % self._mmc_elapsed_time,
                 success=self._mmc_success,
                 error_message=self._mmc_error_message,
                 traceback=self._mmc_traceback,
@@ -357,9 +359,20 @@ class BaseCommandMixin(object):
                 MMCEmail.send(
                     self._mmc_hostname, self._mmc_script, text, SUBJECT_LIMIT)
 
+    def __mmc_update_script_meta(self):
+        from mmc.models import MMCLog
+
+        try:
+            MMCLog.objects.get(
+                pk=self._mmc_log_instance.pk).script.update_meta(
+            self._mmc_elapsed_time)
+        except Exception as err:
+            stderr("[MMC] Logging broken with message: {0}".format(err))
+
     def _mmc_at_exit_callback(self, *args, **kwargs):
         self.__mmc_stop_monitor()
         self.__mmc_store_log(final=True)
+        self.__mmc_update_script_meta()
         self._mmc_lock.unlock()
         self.__mmc_notification()
         self.__mmc_send_mail()

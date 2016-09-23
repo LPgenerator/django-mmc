@@ -60,11 +60,13 @@ class MMCHostAdmin(admin.ModelAdmin):
 
 class MMCScriptAdmin(MMCHostAdmin):
     list_display = (
-        'name', 'calls', 'ignore', 'one_copy', 'save_on_error',
-        'real_time', 'enable_queries', 'temporarily_disabled', 'created', 'id')
+        'name', 'calls', 'max_elapsed_sec', 'ignore', 'one_copy',
+        'save_on_error', 'real_time', 'enable_queries', 'temporarily_disabled',
+        'enable_triggers', 'created', 'last_call', 'id')
     list_filter = (
         'temporarily_disabled', 'ignore', 'one_copy',
-        'save_on_error', 'real_time', 'enable_queries',)
+        'save_on_error', 'real_time', 'enable_queries',
+        'enable_triggers',)
     # list_editable = list_filter
     fieldsets = [
         ('Basic', {'fields': [
@@ -76,6 +78,11 @@ class MMCScriptAdmin(MMCHostAdmin):
             'trigger_cpu', 'trigger_queries',
         ]}),
     ]
+
+    def max_elapsed_sec(self, cls):
+        return '%0.2f sec' % cls.max_elapsed
+    max_elapsed_sec.admin_order_field = 'max_elapsed'
+    max_elapsed_sec.short_description = 'Max elapsed'
 
 
 class MMCEmailAdmin(admin.ModelAdmin):
