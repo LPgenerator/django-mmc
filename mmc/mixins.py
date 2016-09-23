@@ -16,7 +16,9 @@ except ImportError:
 
 
 try:
-    from django.core.management.base import NoArgsCommand as NoArgsCommandOrigin
+    from django.core.management.base import (
+      NoArgsCommand as NoArgsCommandOrigin
+    )
 except ImportError:
     from django.core.management import BaseCommand as NoArgsCommandOrigin
 
