@@ -383,7 +383,7 @@ class BaseCommandMixin(object):
         try:
             MMCLog.objects.get(
                 pk=self._mmc_log_instance.pk).script.update_meta(
-            self._mmc_elapsed_time)
+                self._mmc_elapsed_time)
         except Exception as err:
             stderr("[MMC] Logging broken with message: {0}".format(err))
 
