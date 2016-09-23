@@ -1,6 +1,10 @@
 __author__ = 'gotlium'
 
-from django.utils import timezone
+try:
+    from django.utils import timezone
+except:
+    from datetime import datetime as timezone
+
 from django.db import models
 try:
     from django.utils.importlib import import_module
