@@ -40,7 +40,7 @@ except ImportError:
 
 from mmc.defaults import (
     SENTRY_NOTIFICATION, EMAIL_NOTIFICATION, READ_STDOUT,
-    SUBJECT_LIMIT, REAL_TIME_UPDATE, HOSTNAME
+    SUBJECT_LIMIT, REAL_TIME_UPDATE, HOSTNAME, NEW_SCRIPT_NOTIFICATION
 )
 from mmc.lock import get_lock_instance
 from mmc.utils import monkey_mix
@@ -382,6 +382,14 @@ class BaseCommandMixin(object):
 
                 MMCEmail.send(
                     self._mmc_hostname, self._mmc_script, text, SUBJECT_LIMIT)
+
+        if EMAIL_NOTIFICATION and NEW_SCRIPT_NOTIFICATION:
+            cls = MMCLog.objects.get(pk=self._mmc_log_instance.pk)
+            if cls.script.calls < 2:
+                MMCEmail.send(
+                    self._mmc_hostname, self._mmc_script,
+                    "Script: %s, Host: %s" % (
+                        self._mmc_hostname, self._mmc_script), "New script")
 
     def __mmc_update_script_meta(self):
         from mmc.models import MMCLog

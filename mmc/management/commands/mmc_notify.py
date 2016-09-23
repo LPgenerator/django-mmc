@@ -34,6 +34,7 @@ class Command(BaseCommand):
         for i, log in enumerate(log_list):
             if self.check_pid(log.pid, log.script.name):
                 continue
+
             MMCEmail.send(
                 log.hostname.name, log.script.name,
                 'Maybe script "%s" was killed by OS kernel.' % log.script.name)
