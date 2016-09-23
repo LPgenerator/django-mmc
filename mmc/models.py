@@ -66,8 +66,13 @@ class MMCScript(models.Model):
         default=False, help_text='Enable triggers for receive email '
                                  'notification, if threshold of counters '
                                  'will be exceeded')
-    temporarily_disabled = models.BooleanField(
-        default=False, help_text='Temporarily disable script execution')
+    temporarily_disabled = models.SmallIntegerField(
+        default=0, choices=(
+            (0, 'Enabled'),
+            (1, 'Disabled / Raise error'),
+            (2, 'Disabled / Silence mode'),
+        ),
+        help_text='Temporarily disable script execution')
     last_call = models.DateTimeField(auto_now=True)
     max_elapsed = models.FloatField(default=0.0)
     track_at_exit = models.BooleanField(
@@ -109,8 +114,12 @@ class MMCScript(models.Model):
     @classmethod
     def run_is_enabled(cls, name):
         script = cls.objects.get(name=name)
-
         return not script.temporarily_disabled
+
+    @classmethod
+    def exit_mode(cls, name):
+        script = cls.objects.get(name=name)
+        return script.temporarily_disabled
 
     class Meta:
         verbose_name = 'Script'
