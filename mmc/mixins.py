@@ -141,7 +141,7 @@ class BaseCommandMixin(object):
 
             try:
                 if not MMCScript.run_is_enabled(self._mmc_script):
-                    if MMCScript.exit_mode(self._mmc_script) == 1:
+                    if self.__mmc_get_mode() == 1:
                         sys.stdout.write("Temporarily disabled\n")
                         sys.exit(-1)
             except MMCScript.DoesNotExist:
@@ -229,10 +229,16 @@ class BaseCommandMixin(object):
         if mmc_is_test() or not self.__mmc_track_at_exit():
             self._mmc_at_exit_callback()
 
-    def execute(self, *args, **options):
+    def __mmc_get_mode(self):
         from mmc.models import MMCScript
 
-        if MMCScript.exit_mode(self._mmc_script) == 2:
+        try:
+            return MMCScript.exit_mode(self._mmc_script)
+        except Exception as err:
+            stderr("[MMC] {0}".format(err))
+
+    def execute(self, *args, **options):
+        if self.__mmc_get_mode() == 2:
             return
 
         self.__mmc_init(**options)
