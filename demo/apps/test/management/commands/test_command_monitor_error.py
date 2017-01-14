@@ -8,6 +8,11 @@ except ImportError:
 
 
 class Command(NoArgsCommand):
+    def handle(self, *args, **options):
+        if args:
+            raise CommandError("Command doesn't accept any arguments")
+        return self.handle_noargs(**options)
+        
     def handle_noargs(self, *args, **options):
         time.sleep(4)
         raise Exception("Error ...")
