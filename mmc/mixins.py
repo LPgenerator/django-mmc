@@ -204,9 +204,9 @@ class BaseCommandMixin(object):
 
     def __mmc_run(self, *args, **options):
         if hasattr(self, '_no_monkey'):
-            self._no_monkey.execute(self, *args, **options)
+            return self._no_monkey.execute(self, *args, **options)
         else:
-            super(BaseCommandMixin, self).execute(*args, **options)
+            return super(BaseCommandMixin, self).execute(*args, **options)
 
     def __mmc_enable_queries(self):
         if self._mmc_log_instance:
@@ -215,8 +215,9 @@ class BaseCommandMixin(object):
 
     def __mmc_execute(self, *args, **options):
         try:
-            self.__mmc_run(*args, **options)
+            result = self.__mmc_run(*args, **options)
             self._mmc_success = True
+            return result
         except (Exception, KeyboardInterrupt) as err:
             self._mmc_success = False
             self._mmc_error_message = err
@@ -245,8 +246,9 @@ class BaseCommandMixin(object):
         self.__mmc_log_start()
         self.__mmc_run_monitor()
         self.__mmc_enable_queries()
-        self.__mmc_execute(*args, **options)
+        result = self.__mmc_execute(*args, **options)
         self.__mmc_done()
+        return result
 
     def __mmc_get_sys_argv(self):
         if PY2 is True:
