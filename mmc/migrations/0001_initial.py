@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                 ('sys_argv', models.CharField(max_length=255, null=True, blank=True)),
                 ('memory', models.FloatField(default=0.0)),
                 ('cpu_time', models.FloatField(default=0.0)),
-                ('hostname', models.ForeignKey(to='mmc.MMCHost')),
+                ('hostname', models.ForeignKey(to='mmc.MMCHost', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Log',
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mmclog',
             name='script',
-            field=models.ForeignKey(to='mmc.MMCScript'),
+            field=models.ForeignKey(to='mmc.MMCScript', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]
