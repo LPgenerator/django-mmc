@@ -135,8 +135,9 @@ class MMCLog(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField(auto_now=True)
     elapsed = models.FloatField()
-    hostname = models.ForeignKey(MMCHost)
-    script = models.ForeignKey(MMCScript)
+    hostname = models.ForeignKey(MMCHost, blank=True, null=True,
+                                 on_delete=models.SET_NULL)
+    script = models.ForeignKey(MMCScript, on_delete=models.PROTECT)
     success = models.NullBooleanField(default=None)
     error_message = models.TextField(blank=True, null=True)
     traceback = models.TextField(blank=True, null=True)
