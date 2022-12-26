@@ -1,7 +1,7 @@
 Django>=1.7
 South>=1.0
 django-grappelli==2.4.10
-wheel==0.24.0
+wheel==0.38.1
 ipython>=2.3.0
 Werkzeug>=0.9.6
 django-extensions>=1.4.4
